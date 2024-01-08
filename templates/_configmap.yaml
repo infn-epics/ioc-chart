@@ -1,0 +1,14 @@
+{{- define "ioc-instance.configmap" -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  {{ include "ioc-chart-chart.release" . }}
+  labels:
+    app: {{ include "ioc-chart-chart.release" . }}
+    beamline: {{ .Values.beamline }}
+    ioc_version: {{ .Values.ioc_version | quote }}
+    is_ioc: "True"
+data:
+
+{{- end -}}
