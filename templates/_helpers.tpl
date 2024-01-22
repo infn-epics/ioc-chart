@@ -1,10 +1,10 @@
-# ioc-chart-chart/templates/_helpers.tpl
-{{- define "ioc-chart-chart.fullname" -}}
+# ioc-chart/templates/_helpers.tpl
+{{- define "ioc-chart.fullname" -}}
 {{- printf "%s-%s" .Release.Name .Chart.Name }}
 {{- end -}}
-{{- define "ioc-chart-chart.name" -}}
+{{- define "ioc-chart.name" -}}
 {{- .Chart.Name }}
 {{- end -}}
-{{- define "ioc-chart-chart.release" -}}
+{{- define "ioc-chart.release" -}}
 {{- .Release.Name }}
 {{- end -}}

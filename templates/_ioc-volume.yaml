@@ -5,9 +5,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "ioc-chart-chart.release" . }}-data
+  name: {{ include "ioc-chart.release" . }}-data
   labels:
-    app: {{ include "ioc-chart-chart.release" . }}-data
+    app: {{ include "ioc-chart.release" . }}-data
     beamline: {{ .Values.beamline }}
 spec:
   accessModes:
@@ -23,9 +23,9 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "ioc-chart-chart.release" . }}-config
+  name: {{ include "ioc-chart.release" . }}-config
   labels:
-    app: {{ include "ioc-chart-chart.release" . }}-config
+    app: {{ include "ioc-chart.release" . }}-config
     beamline: {{ .Values.beamline }}
 spec:
   accessModes:

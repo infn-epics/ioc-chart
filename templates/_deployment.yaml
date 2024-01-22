@@ -3,28 +3,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ioc-chart-chart.release" . }}
+  name: {{ include "ioc-chart.release" . }}
   labels:
-    app: {{ include "ioc-chart-chart.release" . }}
-    chart: {{ include "ioc-chart-chart.name" . }}
+    app: {{ include "ioc-chart.release" . }}
+    chart: {{ include "ioc-chart.name" . }}
     beamline: {{ .Values.beamline }}
     ioc_version: {{ .Values.ioc_version | quote }}
     is_ioc: "True"
   annotations:
-    kubernetes.io/change-cause: {{ .Values.ioc_version }} deployed
+    kubernetes.io/change-cause: {{ .Values.ioc_version | quote }} deployed
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "ioc-chart-chart.release" . }}
+      app: {{ include "ioc-chart.release" . }}
 
   template:
     metadata:
       labels:
-        app: {{ include "ioc-chart-chart.release" . }}
+        app: {{ include "ioc-chart.release" . }}
         beamline: {{ .Values.beamline }}
         ioc_version: {{ .Values.ioc_version | quote }}
-        chart: {{ include "ioc-chart-chart.name" . }}
+        chart: {{ include "ioc-chart.name" . }}
+        {{ if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
+        config: {{.Values.iocGitRepoConfig}}
+        {{- end}}
+
 
         is_ioc: "True"
     spec:
@@ -43,8 +47,11 @@ spec:
           apk --no-cache add git
         
           rm -rf /tmp/*
-          
-          git clone {{ .Values.iocGitRepoConfig.url }} --recurse-submodules temp-config
+          if [ -n "{{ .Values.iocGitRepoConfig.branch }}" ];then
+            git clone -b {{ .Values.iocGitRepoConfig.branch }} {{ .Values.iocGitRepoConfig.url }} --recurse-submodules temp-config
+          else
+            git clone {{ .Values.iocGitRepoConfig.url }} --recurse-submodules temp-config
+          fi
 
           if [ -d temp-config/{{ .Values.iocGitRepoConfig.path}} ];then
             if [ {{ .Values.iocGitRepoConfig.path}} == "." ];then
@@ -81,16 +88,16 @@ spec:
             claimName: {{ .Values.nfsv2TftpClaim }}
         {{- end }}
         {{- if .Values.autosave }}
-        - name: {{ include "ioc-chart-chart.release" . }}
+        - name: {{ include "ioc-chart.release" . }}
           persistentVolumeClaim:
-            claimName: {{ include "ioc-chart-chart.release" . }}
+            claimName: {{ include "ioc-chart.release" . }}
         {{- end }}
         {{- if .Values.dataVolume.pvc }}
-        - name: {{ include "ioc-chart-chart.release" . }}-data
+        - name: {{ include "ioc-chart.release" . }}-data
           persistentVolumeClaim:
-            claimName: {{ include "ioc-chart-chart.release" . }}-data
+            claimName: {{ include "ioc-chart.release" . }}-data
         {{- else if .Values.dataVolume.hostPath }}
-        - name: {{ include "ioc-chart-chart.release" . }}-data
+        - name: {{ include "ioc-chart.release" . }}-data
           hostPath:
             path: {{ .Values.dataVolume.hostPath }}
             type: Directory
@@ -98,14 +105,14 @@ spec:
         {{- if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
         - name: config-volume
           persistentVolumeClaim:
-            claimName: {{ include "ioc-chart-chart.release" . }}-config
+            claimName: {{ include "ioc-chart.release" . }}-config
         {{- else}}
         - name: config-volume
           configMap:
-            name: {{ include "ioc-chart-chart.release" . }}
+            name: {{ include "ioc-chart.release" . }}
         {{- end }}
       containers:
-      - name: {{ include "ioc-chart-chart.release" . }}
+      - name: {{ include "ioc-chart.release" . }}
         image: {{ .Values.image }}
         command:
           - bash
@@ -136,11 +143,11 @@ spec:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
         {{- if .Values.autosave }}
-        - name: {{ include "ioc-chart-chart.release" . }}
+        - name: {{ include "ioc-chart.release" . }}
           mountPath: /autosave
         {{- end }}
         {{- if or (.Values.dataVolume.pvc) (.Values.dataVolume.hostPath)  }}
-        - name: {{ include "ioc-chart-chart.release" . }}-data
+        - name: {{ include "ioc-chart.release" . }}-data
           mountPath: {{ .Values.dataVolume.hostPath }}
           {{- if .Values.dataVolume.hostPath }}
           mountPropagation: HostToContainer
@@ -149,17 +156,17 @@ spec:
         {{- if .Values.nfsv2TftpClaim }}
         - name: nfsv2-tftp-volume
           mountPath: /nfsv2-tftp
-          subPath: "{{ .Values.beamline }}/{{ include "ioc-chart-chart.release" . }}"
+          subPath: "{{ .Values.beamline }}/{{ include "ioc-chart.release" . }}"
           {{- end }}
         {{- if .Values.runtimeClaim }}
         - name: runtime-volume
           mountPath: /epics/runtime
-          subPath: "{{ include "ioc-chart-chart.release" . }}"
+          subPath: "{{ include "ioc-chart.release" . }}"
         {{- end }}
         {{- if .Values.opisClaim }}
         - name: opis-volume
           mountPath: /epics/opi
-          subPath: "{{ include "ioc-chart-chart.release" . }}"
+          subPath: "{{ include "ioc-chart.release" . }}"
         {{- end }}
         stdin: true
         tty: true
@@ -170,11 +177,11 @@ spec:
         imagePullPolicy: Always
         env:
         - name: IOCSH_PS1
-          value: "{{ include "ioc-chart-chart.release" . }} > "
+          value: "{{ include "ioc-chart.release" . }} > "
         - name: IOC_NAME
-          value: {{ include "ioc-chart-chart.release" . }}
+          value: {{ .Release.Name }}
         - name: IOC_PREFIX
-          value: {{ or .Values.prefix .Values.ioc_name | quote }}
+          value: {{ or .Values.prefix .Release.Name | quote }}
         - name: IOC_VERSION
           value: {{ .Values.ioc_version | quote }}
         {{- range $envVar := .Values.env }}

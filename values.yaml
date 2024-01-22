@@ -20,8 +20,8 @@ useAffinity: false
 iocFolder: /epics/ioc
 iocConfig: /epics/ioc/config
 # scripts for controlling the IOC
-start: /epics/ioc/config/start.sh #/epics/ioc/start.sh
-stop: # /epics/ioc/stop.sh
+start: /epics/ioc/start.sh
+stop: /epics/ioc/stop.sh
 liveness: # /epics/ioc/liveness.sh
 
 # The following are added to the pod's environment
@@ -90,6 +90,7 @@ resources:
 iocGitRepoConfig:
   enable: false
   url:
+  branch: main
   path: . ## specify a path that contain the configuration in the iocgitrepo 
 
 
