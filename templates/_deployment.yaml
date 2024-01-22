@@ -51,7 +51,7 @@ spec:
           fi
 
           if [ -d temp-config/{{ .Values.iocGitRepoConfig.path}} ];then
-            if [ {{ .Values.iocGitRepoConfig.path}} == "." ];then
+            if [ {{ .Values.iocGitRepoConfig.path }} == "." ];then
                 mv temp-config/* /tmp/
             else
               mv temp-config/{{ .Values.iocGitRepoConfig.path}}/* /tmp/

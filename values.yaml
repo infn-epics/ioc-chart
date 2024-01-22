@@ -91,7 +91,6 @@ iocGitRepoConfig:
   enable: false
   url:
   branch: main
-  path: . ## specify a path that contain the configuration in the iocgitrepo 
-
+  path: "."
 
   
