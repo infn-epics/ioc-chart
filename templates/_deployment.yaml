@@ -25,12 +25,9 @@ spec:
         beamline: {{ .Values.beamline }}
         ioc_version: {{ .Values.ioc_version | quote }}
         chart: {{ include "ioc-chart.name" . }}
-        {{ if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
-        config: {{.Values.iocGitRepoConfig}}
-        {{- end}}
-
-
         is_ioc: "True"
+        
+        
     spec:
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
