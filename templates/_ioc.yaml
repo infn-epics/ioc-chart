@@ -3,4 +3,4 @@
 {{  include "ioc-instance.deployment" . }}
 {{  include "ioc-instance.service" . }}
 {{  include "ioc-instance.configmap" . }}
-{{ end }}
+{{- end }}

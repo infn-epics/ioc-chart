@@ -58,7 +58,7 @@ serviceAccountName:
 # on the command line to helm.
 image:
 ioc_version: 1.0
-ioc_name: ioc
+ioc_name:
 # a volume to mount for writing data to. This can be a PVC or a hostPath
 # the PVC
 dataVolume:

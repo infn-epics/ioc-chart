@@ -12,7 +12,7 @@ metadata:
 data:
 {{- if .Values.iocGitRepoConfig.enable }}
   url: {{ .Values.iocGitRepoConfig.url | quote }}
-  branch: {{.Values.iocGitRepoConfig.branch}}
+  branch: "{{.Values.iocGitRepoConfig.branch}}"
   path: {{ .Values.iocGitRepoConfig.path | quote }}
 {{- end -}}
 {{- end -}}

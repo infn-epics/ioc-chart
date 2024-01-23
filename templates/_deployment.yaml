@@ -11,13 +11,12 @@ metadata:
     ioc_version: {{ .Values.ioc_version | quote }}
     is_ioc: "True"
   annotations:
-    kubernetes.io/change-cause: {{ .Values.ioc_version | quote }} deployed
+    kubernetes.io/change-cause: {{ .Values.ioc_version | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: {{ include "ioc-chart.release" . }}
-
   template:
     metadata:
       labels:
@@ -51,7 +50,7 @@ spec:
           fi
 
           if [ -d temp-config/{{ .Values.iocGitRepoConfig.path}} ];then
-            if [ {{ .Values.iocGitRepoConfig.path }} == "." ];then
+            if [ "{{ .Values.iocGitRepoConfig.path }}" == "." ];then
                 mv temp-config/* /tmp/
             else
               mv temp-config/{{ .Values.iocGitRepoConfig.path}}/* /tmp/
@@ -176,7 +175,7 @@ spec:
         - name: IOCSH_PS1
           value: "{{ include "ioc-chart.release" . }} > "
         - name: IOC_NAME
-          value: {{ .Release.Name }}
+          value: "{{ .Release.Name }}"
         - name: IOC_PREFIX
           value: {{ or .Values.prefix .Release.Name | quote }}
         - name: IOC_VERSION
