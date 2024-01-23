@@ -10,8 +10,7 @@ metadata:
     beamline: {{ .Values.beamline | quote}}
     ioc_version: {{ .Values.ioc_version | quote }}
     is_ioc: "True"
-  annotations:
-    kubernetes.io/change-cause: {{ .Values.ioc_version | quote }}
+  
 spec:
   replicas: 1
   selector:
@@ -21,7 +20,7 @@ spec:
     metadata:
       labels:
         app: {{ include "ioc-chart.release" . }}
-        beamline: {{ .Values.beamline }}
+        beamline: {{ .Values.beamline | quote }}
         ioc_version: {{ .Values.ioc_version | quote }}
         chart: {{ include "ioc-chart.name" . }}
         is_ioc: "True"
