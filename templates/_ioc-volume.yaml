@@ -38,10 +38,9 @@ spec:
 {{- if not .Values.autosaveClaim }}
 apiVersion: v1
 kind: PersistentVolumeClaim
-beamline: {{ .Values.beamline }}
-
 metadata:
   name: {{ include "ioc-chart.release" . }}-autosave
+  beamline: {{ .Values.beamline }}
 spec:
   accessModes:
     - ReadWriteOnce
