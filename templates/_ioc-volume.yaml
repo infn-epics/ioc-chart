@@ -8,7 +8,7 @@ metadata:
   name: {{ include "ioc-chart.release" . }}-data
   labels:
     app: {{ include "ioc-chart.release" . }}
-    beamline: {{ .Values.beamline }}
+    beamline: {{ .Values.beamline | quote }}
 spec:
   accessModes:
     - {{ .Values.dataVolume.accessMode }}
@@ -26,7 +26,7 @@ metadata:
   name: {{ include "ioc-chart.release" . }}-config
   labels:
     app: {{ include "ioc-chart.release" . }}
-    beamline: {{ .Values.beamline }}
+    beamline: {{ .Values.beamline | quote }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -42,7 +42,7 @@ metadata:
   name: {{ include "ioc-chart.release" . }}-autosave
   labels:
     app: {{ include "ioc-chart.release" . }}
-    beamline: {{ .Values.beamline }}
+    beamline: {{ .Values.beamline | quote }}
 spec:
   accessModes:
     - ReadWriteOnce
