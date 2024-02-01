@@ -41,7 +41,7 @@ kind: PersistentVolumeClaim
 beamline: {{ .Values.beamline }}
 
 metadata:
-  name: {{ include "epics-console-chart.release" . }}-autosave-pvc
+  name: {{ include "ioc-chart.release" . }}-autosave-pvc
 spec:
   accessModes:
     - ReadWriteOnce
