@@ -7,7 +7,7 @@ apiVersion: v1
 metadata:
   name: {{ include "ioc-chart.release" . }}-data
   labels:
-    app: {{ include "ioc-chart.release" . }}-data
+    app: {{ include "ioc-chart.release" . }}
     beamline: {{ .Values.beamline }}
 spec:
   accessModes:
@@ -25,7 +25,7 @@ apiVersion: v1
 metadata:
   name: {{ include "ioc-chart.release" . }}-config
   labels:
-    app: {{ include "ioc-chart.release" . }}-config
+    app: {{ include "ioc-chart.release" . }}
     beamline: {{ .Values.beamline }}
 spec:
   accessModes:
@@ -40,7 +40,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ include "ioc-chart.release" . }}-autosave
-  beamline: {{ .Values.beamline }}
+  labels:
+    app: {{ include "ioc-chart.release" . }}
+    beamline: {{ .Values.beamline }}
 spec:
   accessModes:
     - ReadWriteOnce
