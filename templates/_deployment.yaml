@@ -90,7 +90,7 @@ spec:
             {{- if .Values.autosave }}
             claimName: {{ .Values.autosave }}
             {{- else }}
-            claimName: {{ include "ioc-chart.release" . }}-autosave-pvc
+            claimName: {{ include "ioc-chart.release" . }}-autosave
             {{- end }}
         {{- if .Values.dataVolume.pvc }}
         - name: {{ include "ioc-chart.release" . }}-data
