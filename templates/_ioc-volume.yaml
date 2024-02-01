@@ -11,7 +11,7 @@ metadata:
     beamline: {{ .Values.beamline }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.dataVolume.accessMode }}
   resources:
     requests:
       storage: 1000Mi
@@ -33,6 +33,21 @@ spec:
   resources:
     requests:
       storage: 10Mi
+---
+{{- end }}
+{{- if not .Values.autosaveClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+beamline: {{ .Values.beamline }}
+
+metadata:
+  name: {{ include "epics-console-chart.release" . }}-autosave-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 {{- end }}
 {{- end }}
