@@ -56,7 +56,7 @@ spec:
               rm -rf temp-config
             fi
           else
-            mv temp-config/* /tmp/ /autosave
+            mv temp-config/* /tmp/
           fi
 
           chmod a+w,a+r -R /tmp
@@ -64,8 +64,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /tmp
-        - name: autosave-volume
-          mountPath: /autosave
+        
     {{ end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
       volumes:
