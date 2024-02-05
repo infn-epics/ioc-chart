@@ -175,6 +175,11 @@ spec:
         resources:
 {{  toYaml .Values.resources | indent 10}}
         imagePullPolicy: Always
+        {{- if .Values.configCA.existingConfigMap }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.configCA.existingConfigMap }}
+        {{- end }}
         env:
         - name: IOCSH_PS1
           value: "{{ include "ioc-chart.release" . }} > "
