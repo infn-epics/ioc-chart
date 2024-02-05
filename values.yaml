@@ -89,7 +89,6 @@ resources:
 ## if enabled ioc config is taken from git the specified git repository instead of configMap
 ## 
 gitRepoConfig:
-  enable: false
   url:
   branch: main
   path: "."

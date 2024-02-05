@@ -18,12 +18,12 @@ spec:
 
 ---
 {{- end }}
-{{ if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
+{{ if .Values.gitRepoConfig.url }}
 
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "ioc-chart.release" . }}-config
+  name: {{ include "ioc-chart.release" . }}-gitconfig
   labels:
     app: {{ include "ioc-chart.release" . }}
     beamline: {{ .Values.beamline | quote }}

@@ -31,7 +31,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
+      {{ if .Values.gitRepoConfig.url }}
       initContainers:
       - name: init-volume
         image: alpine:latest
@@ -101,10 +101,10 @@ spec:
             path: {{ .Values.dataVolume.hostPath }}
             type: Directory
         {{- end }}
-        {{- if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
+        {{- if .Values.gitRepoConfig.url }}
         - name: config-volume
           persistentVolumeClaim:
-            claimName: {{ include "ioc-chart.release" . }}-config
+            claimName: {{ include "ioc-chart.release" . }}-gitconfig
         {{- else}}
         - name: config-volume
           configMap:
