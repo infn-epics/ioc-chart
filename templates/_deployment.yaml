@@ -60,6 +60,7 @@ spec:
           fi
 
           chmod a+w,a+r -R /tmp
+          ls /tmp
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-volume
