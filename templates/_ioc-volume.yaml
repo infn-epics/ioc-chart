@@ -18,7 +18,7 @@ spec:
 
 ---
 {{- end }}
-{{ if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
+{{ if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
 
 kind: PersistentVolumeClaim
 apiVersion: v1

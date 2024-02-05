@@ -31,7 +31,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
+      {{ if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
       initContainers:
       - name: init-volume
         image: alpine:latest
@@ -42,17 +42,17 @@ spec:
           apk --no-cache add git
         
           rm -rf /tmp/*
-          if [ -n "{{ .Values.iocGitRepoConfig.branch }}" ];then
-            git clone -b {{ .Values.iocGitRepoConfig.branch }} {{ .Values.iocGitRepoConfig.url }} --recurse-submodules temp-config
+          if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
+            git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           else
-            git clone {{ .Values.iocGitRepoConfig.url }} --recurse-submodules temp-config
+            git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           fi
 
-          if [ -d temp-config/{{ .Values.iocGitRepoConfig.path}} ];then
-            if [ "{{ .Values.iocGitRepoConfig.path }}" == "." ];then
+          if [ -d temp-config/{{ .Values.gitRepoConfig.path}} ];then
+            if [ "{{ .Values.gitRepoConfig.path }}" == "." ];then
                 mv temp-config/* /tmp/
             else
-              mv temp-config/{{ .Values.iocGitRepoConfig.path}}/* /tmp/
+              mv temp-config/{{ .Values.gitRepoConfig.path}}/* /tmp/
               rm -rf temp-config
             fi
           else
@@ -102,7 +102,7 @@ spec:
             path: {{ .Values.dataVolume.hostPath }}
             type: Directory
         {{- end }}
-        {{- if and (.Values.iocGitRepoConfig.enable) (.Values.iocGitRepoConfig.url) }}
+        {{- if and (.Values.gitRepoConfig.enable) (.Values.gitRepoConfig.url) }}
         - name: config-volume
           persistentVolumeClaim:
             claimName: {{ include "ioc-chart.release" . }}-config

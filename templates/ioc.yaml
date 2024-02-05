@@ -1,6 +1,6 @@
 {{ include "ioc-instance.ioc" . }}
 
-{{- if not (.Values.iocGitRepoConfig.enable) }}
+{{- if not (.Values.gitRepoConfig.enable) }}
 
 {{- /*
   add the contents of every file in the config folder of this IOC helm chart

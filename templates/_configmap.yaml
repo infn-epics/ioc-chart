@@ -10,9 +10,9 @@ metadata:
     ioc_version: {{ .Values.ioc_version | quote }}
     is_ioc: "True"
 data:
-{{- if .Values.iocGitRepoConfig.enable }}
-  url: {{ .Values.iocGitRepoConfig.url | quote }}
-  branch: "{{.Values.iocGitRepoConfig.branch}}"
-  path: {{ .Values.iocGitRepoConfig.path | quote }}
+{{- if .Values.gitRepoConfig.enable }}
+  url: {{ .Values.gitRepoConfig.url | quote }}
+  branch: "{{.Values.gitRepoConfig.branch}}"
+  path: {{ .Values.gitRepoConfig.path | quote }}
 {{- end -}}
 {{- end -}}
