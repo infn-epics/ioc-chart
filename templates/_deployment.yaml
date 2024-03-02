@@ -27,6 +27,8 @@ spec:
         
         
     spec:
+      securityContext:
+      {{  toYaml .Values.securityContext | indent 10}}
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
@@ -168,8 +170,7 @@ spec:
         {{- end }}
         stdin: true
         tty: true
-        securityContext:
-{{  toYaml .Values.securityContext | indent 10}}
+        
         resources:
 {{  toYaml .Values.resources | indent 10}}
         imagePullPolicy: Always

@@ -47,8 +47,8 @@ securityContext:
   #   - ALL
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
-serviceAccount: "privileged"
-serviceAccountName:
+serviceAccount:
+serviceAccountName: "default"
 ########################################################################################
 # The following values are expected to be overridden in individual IOC values.yaml
 ########################################################################################
