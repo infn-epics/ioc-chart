@@ -1,4 +1,3 @@
-{{- define "ioc-instance.configmap" -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -14,5 +13,7 @@ data:
   url: {{ .Values.gitRepoConfig.url }}
   branch: "{{.Values.gitRepoConfig.branch}}"
   path: {{ .Values.gitRepoConfig.path | quote }}
-{{- end -}}
-{{- end -}}
+{{- else}}
+{{ (.Files.Glob "config/*").AsConfig | indent 2 }}
+{{- end }}
+  

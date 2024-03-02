@@ -35,19 +35,13 @@ globalenv:
   - name: "K8S_IOC_NFS_MOUNT"
     value: "172.23.168.220:iocs"
 
-# reasonable defaults for securityContext
+
 securityContext:
-  privileged: true
-  # IMPORTANT if you want access to /dls/p38/data then the following should
-  # be set to p38detector account ID and group ID
-  # runAsUser: 37143
-  # runAsGroup: 37143
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-serviceAccount:
+    privileged: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
 serviceAccountName: "default"
 ########################################################################################
 # The following values are expected to be overridden in individual IOC values.yaml
