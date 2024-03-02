@@ -35,13 +35,14 @@ spec:
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
       initContainers:
-      - name: init-volume
+      - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         command: 
         - sh 
         - -c
         - |
-          rm -rf /tmp/*
+          id=`id`
+          echo "ID $id"
           if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
             git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           else
