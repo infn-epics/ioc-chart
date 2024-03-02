@@ -68,7 +68,7 @@ dataVolume:
   # pvc or hostPath will be mounted at so that users need not be confused about
   # inside/outside container paths.
   hostPath: /data/
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
 
 # use the shared PVC for publishing opi files over http (see services/opis)
 opisClaim:
