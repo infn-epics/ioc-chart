@@ -28,6 +28,7 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
+
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
@@ -95,7 +96,7 @@ spec:
         {{- if .Values.dataVolume.pvc }}
         - name: {{ include "ioc-chart.release" . }}-data
           persistentVolumeClaim:
-            claimName: {{ include "ioc-chart.release" . }}-data
+            claimName: {{ .Values.dataVolume.pvc  }}
         {{- else if .Values.dataVolume.hostPath }}
         - name: {{ include "ioc-chart.release" . }}-data
           hostPath:
