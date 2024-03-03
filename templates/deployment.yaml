@@ -94,11 +94,11 @@ spec:
             claimName: {{ include "ioc-chart.release" . }}-autosave
             {{- end }}
         {{- if .Values.dataVolume.pvc }}
-        - name: {{ include "ioc-chart.release" . }}-data
+        - name: data-volume
           persistentVolumeClaim:
-            claimName: {{ .Values.dataVolume.pvc  }}
+            claimName: {{ include "ioc-chart.release" . }}-data
         {{- else if .Values.dataVolume.hostPath }}
-        - name: {{ include "ioc-chart.release" . }}-data
+        - name: data-volume
           hostPath:
             path: {{ .Values.dataVolume.hostPath }}
             type: Directory
@@ -148,7 +148,7 @@ spec:
           mountPath: /autosave
         {{- end }}
         {{- if or (.Values.dataVolume.pvc) (.Values.dataVolume.hostPath)  }}
-        - name: {{ include "ioc-chart.release" . }}-data
+        - name: data-volume
           mountPath: {{ .Values.dataVolume.hostPath }}
           {{- if .Values.dataVolume.hostPath }}
           mountPropagation: HostToContainer
