@@ -26,9 +26,7 @@ spec:
         
         
     spec:
-      securityContext:
-        {{- toYaml .Values.securityContext | nindent 8 }}
-
+      
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
