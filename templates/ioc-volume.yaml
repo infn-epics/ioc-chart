@@ -13,7 +13,7 @@ spec:
     - {{ .Values.dataVolume.accessMode }}
   resources:
     requests:
-      storage: 1000Mi
+      storage: {{ .Values.dataVolume.size }}
 
 ---
 {{- end }}
@@ -31,7 +31,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Mi
+      storage: {{ .Values.gitRepoConfig.size }}
 ---
 {{- end }}
 {{- if not .Values.autosaveClaim }}

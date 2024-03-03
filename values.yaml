@@ -57,12 +57,14 @@ ioc_name:
 # the PVC
 dataVolume:
   # Create a PVC called {{ .Chart.Name }}-data when true
-  pvc: true
+  pvc: false
   # A path on the host machine to write data into. Also used as the path that the
   # pvc or hostPath will be mounted at so that users need not be confused about
   # inside/outside container paths.
   hostPath: /data/
   accessMode: ReadWriteOnce
+  size: 1Gi
+
 
 # use the shared PVC for publishing opi files over http (see services/opis)
 opisClaim:
@@ -86,6 +88,7 @@ gitRepoConfig:
   url:
   branch: main
   path: "."
+  size: 1Gi
   
 configCA:
   existingConfigMap: "" # name of existing configMap that set CA parameters
