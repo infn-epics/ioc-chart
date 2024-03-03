@@ -43,6 +43,7 @@ spec:
         - |
           id=`id`
           cd /tmp
+          ls -latr
           echo "ID $id"
           if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
             git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
