@@ -42,6 +42,7 @@ spec:
         - -c
         - |
           id=`id`
+          cd /tmp
           echo "ID $id"
           if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
             git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
@@ -60,7 +61,7 @@ spec:
             mv temp-config/* /tmp/
           fi
 
-          chmod a+w,a+r -R /tmp
+          # chmod a+w,a+r -R /tmp
           ls /tmp
         imagePullPolicy: IfNotPresent
         volumeMounts:
