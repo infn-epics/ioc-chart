@@ -99,11 +99,6 @@ spec:
         - name: data-volume
           persistentVolumeClaim:
             claimName: {{ include "ioc-chart.release" . }}-data
-        {{- else if .Values.dataVolume.hostPath }}
-        - name: data-volume
-          hostPath:
-            path: {{ .Values.dataVolume.hostPath }}
-            type: Directory
         {{- end }}
         {{- if .Values.gitRepoConfig.url }}
         - name: config-volume
