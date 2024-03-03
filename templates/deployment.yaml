@@ -144,7 +144,7 @@ spec:
         - name: autosave-volume
           mountPath: /autosave
         {{- end }}
-        {{- if or (.Values.dataVolume.pvc) (.Values.dataVolume.hostPath)  }}
+        {{- if .Values.dataVolume.pvc }}
         - name: data-volume
           mountPath: {{ .Values.dataVolume.hostPath }}
           {{- if .Values.dataVolume.hostPath }}
