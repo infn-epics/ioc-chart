@@ -5,8 +5,6 @@ metadata:
   name: {{ include "ioc-chart.release" . }}
   labels:
     {{- include "ioc-chart.labels" . | nindent 4 }}
-    
-  
 spec:
   replicas: 1
   selector:

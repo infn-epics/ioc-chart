@@ -1,4 +1,8 @@
 # ioc-chart/templates/_helpers.tpl
+{{- define "ioc-chart.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "ioc-chart.fullname" -}}
 {{- printf "%s-%s" .Release.Name .Chart.Name }}
 {{- end -}}
@@ -26,5 +30,4 @@ ioc_version: {{ .Values.ioc_version | quote }}
 app.kubernetes.io/name: {{ include "ioc-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 beamline: {{ .Values.beamline | quote }}
-
 {{- end }}
