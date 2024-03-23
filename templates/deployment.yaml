@@ -167,10 +167,10 @@ spec:
         resources:
 {{  toYaml .Values.resources | indent 10}}
         imagePullPolicy: Always
-        {{- if .Values.configCA.existingConfigMap }}
+        {{- if .Values.epicsConfiguration.name }}
         envFrom:
           - configMapRef:
-              name: {{ .Values.configCA.existingConfigMap }}
+              name: {{ .Values.epicsConfiguration.name }}
         {{- end }}
         env:
         - name: IOCSH_PS1
