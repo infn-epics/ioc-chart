@@ -32,8 +32,7 @@ spec:
         - |
           id=`id`
           cd /tmp
-          echo "ID $id"
-          echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} "
+          echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
           if [ -d temp-config ];then
             rm -rf temp-config
           fi
