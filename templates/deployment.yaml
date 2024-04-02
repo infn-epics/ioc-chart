@@ -6,6 +6,7 @@ metadata:
     {{- include "ioc-chart.labels" . | nindent 4 }}
 spec:
   replicas: 1
+  serviceName: {{ include "ioc-chart.release" . }}
   selector:
     matchLabels:
       {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
@@ -16,52 +17,45 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.securityContext | nindent 8 }}
-
-      {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
-      {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ if .Values.gitRepoConfig.url }}
       initContainers:
+        {{- if .Values.gitRepoConfig.url }}
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         command: 
-        - sh 
-        - -c
-        - |
-          id=`id`
-          cd /tmp
-          echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
-          if [ -d temp-config ];then
-            rm -rf temp-config
-          fi
-          if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
-            git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
-          else
-            git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
-          fi
-          ls -latr
-
-          if [ -d temp-config/{{ .Values.gitRepoConfig.path}} ];then
-            if [ "{{ .Values.gitRepoConfig.path }}" == "." ];then
-                mv temp-config/* /tmp/
-            else
-              mv temp-config/{{ .Values.gitRepoConfig.path}}/* /tmp/
+          - sh 
+          - -c
+          - |
+            id=$(id)
+            cd /tmp
+            echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
+            if [ -d temp-config ];then
               rm -rf temp-config
             fi
-          else
-            mv temp-config/* /tmp/
-          fi
-
-          # chmod a+w,a+r -R /tmp
-          ls /tmp
+            if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
+              git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
+            else
+              git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
+            fi
+            ls -latr
+            if [ -d temp-config/{{ .Values.gitRepoConfig.path}} ];then
+              if [ "{{ .Values.gitRepoConfig.path }}" == "." ];then
+                mv temp-config/* /tmp/
+              else
+                mv temp-config/{{ .Values.gitRepoConfig.path}}/* /tmp/
+                rm -rf temp-config
+              fi
+            else
+              mv temp-config/* /tmp/
+            fi
+            ls /tmp
         imagePullPolicy: IfNotPresent
         volumeMounts:
-        - name: config-volume
-          mountPath: /tmp
-        
-    {{ end }}
-      terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
+          - name: config-volume
+            mountPath: /tmp
+        {{ end }}
+      terminationGracePeriodSeconds: 15
       volumes:
         {{- if .Values.runtimeClaim }}
         - name: runtime-volume
@@ -101,104 +95,102 @@ spec:
             name: {{ include "ioc-chart.release" . }}
         {{- end }}
       containers:
-      - name: {{ include "ioc-chart.release" . }}
-        image: {{ .Values.image }}
-        command:
-          - bash
-        {{- if .Values.start }}
-        args:
-          - {{ .Values.start }}
-        {{- end }}
-        ports:
-          - containerPort: 5064
-          - containerPort: 5065
-        {{- if .Values.liveness }}
-        livenessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - {{ .Values.liveness }}
-          initialDelaySeconds: 120
-          periodSeconds: 10
-        {{- end }}
-        {{- if .Values.stop }}
-
-        lifecycle:
-          preStop:
-            exec:
-              command: ["bash", "-c", "{{ .Values.stop }}"]
-        {{- end }}
-        volumeMounts:
-        - name: config-volume
-          mountPath: {{ .Values.iocConfig }}
-        {{- if .Values.autosave }}
-        - name: autosave-volume
-          mountPath: /autosave
-        {{- end }}
-        {{- if .Values.dataVolume.pvc }}
-        - name: data-volume
-          mountPath: {{ .Values.dataVolume.hostPath }}
-          {{- if .Values.dataVolume.hostPath }}
-          mountPropagation: HostToContainer
-          {{- end}}
-        {{- end }}
-        {{- if .Values.nfsv2TftpClaim }}
-        - name: nfsv2-tftp-volume
-          mountPath: /nfsv2-tftp
-          subPath: "{{ .Values.beamline }}/{{ include "ioc-chart.release" . }}"
+        - name: {{ include "ioc-chart.release" . }}
+          image: {{ .Values.image }}
+          command:
+            - bash
+          {{- if .Values.start }}
+          args:
+            - {{ .Values.start }}
           {{- end }}
-        {{- if .Values.runtimeClaim }}
-        - name: runtime-volume
-          mountPath: /epics/runtime
-          subPath: "{{ include "ioc-chart.release" . }}"
-        {{- end }}
-        {{- if .Values.opisClaim }}
-        - name: opis-volume
-          mountPath: /epics/opi
-          subPath: "{{ include "ioc-chart.release" . }}"
-        {{- end }}
-        stdin: true
-        tty: true
-        
-        resources:
-{{  toYaml .Values.resources | indent 10}}
-        imagePullPolicy: Always
-        {{- if .Values.epicsConfiguration.name }}
-        envFrom:
-          - configMapRef:
-              name: {{ .Values.epicsConfiguration.name }}
-        {{- end }}
-        env:
-        - name: IOCSH_PS1
-          value: "{{ include "ioc-chart.release" . }} > "
-        - name: IOC_NAME
-          value: "{{ .Release.Name }}"
-        - name: IOC_PREFIX
-          value: {{ or .Values.prefix .Release.Name | quote }}
-        - name: IOC_VERSION
-          value: {{ .Values.ioc_version | quote }}
-        {{- range $envVar := .Values.env }}
-        - name: {{ $envVar.name }}
-          value: {{ $envVar.value | quote }}
-        {{- end }}
-        {{- range $envVar := .Values.globalenv }}
-        - name: {{ $envVar.name }}
-          value: {{ $envVar.value | quote }}
-        {{- end }}
-      {{- if .Values.useAffinity }}
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: beamline
-                operator: In
-                values:
-                  - {{ .Values.beamline }}
-      {{- end }}
-      tolerations:
-        - key: nodetype
-          operator: Equal
-          value: {{ .Values.beamline }}
-          effect: NoSchedule
-
+          ports:
+            - containerPort: 5064
+            - containerPort: 5065
+          {{- if .Values.liveness }}
+          livenessProbe:
+            exec:
+              command:
+              - /bin/bash
+              - {{ .Values.liveness }}
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          {{- end }}
+          {{- if .Values.stop }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["bash", "-c", "{{ .Values.stop }}"]
+          {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: {{ .Values.iocConfig }}
+            {{- if .Values.autosave }}
+            - name: autosave-volume
+              mountPath: /autosave
+            {{- end }}
+            {{- if .Values.dataVolume.pvc }}
+            - name: data-volume
+              mountPath: {{ .Values.dataVolume.hostPath }}
+              {{- if .Values.dataVolume.hostPath }}
+              mountPropagation: HostToContainer
+              {{- end}}
+            {{- end }}
+            {{- if .Values.nfsv2TftpClaim }}
+            - name: nfsv2-tftp-volume
+              mountPath: /nfsv2-tftp
+              subPath: "{{ .Values.beamline }}/{{ include "ioc-chart.release" . }}"
+              {{- end }}
+            {{- if .Values.runtimeClaim }}
+            - name: runtime-volume
+              mountPath: /epics/runtime
+              subPath: "{{ include "ioc-chart.release" . }}"
+            {{- end }}
+            {{- if .Values.opisClaim }}
+            - name: opis-volume
+              mountPath: /epics/opi
+              subPath: "{{ include "ioc-chart.release" . }}"
+            {{- end }}
+          stdin: true
+          tty: true
+          resources:
+            {{- toYaml .Values.resources | indent 12}}
+          imagePullPolicy: Always
+          {{- if .Values.epicsConfiguration.name }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.epicsConfiguration.name }}
+          {{- end }}
+          env:
+            - name: IOCSH_PS1
+              value: "{{ include "ioc-chart.release" . }} > "
+            - name: IOC_NAME
+              value: "{{ .Release.Name }}"
+            - name: IOC_PREFIX
+              value: {{ or .Values.prefix .Release.Name | quote }}
+            - name: IOC_VERSION
+              value: {{ .Values.ioc_version | quote }}
+            {{- range $envVar := .Values.env }}
+            - name: {{ $envVar.name }}
+              value: {{ $envVar.value | quote }}
+            {{- end }}
+            {{- range $envVar := .Values.globalenv }}
+            - name: {{ $envVar.name }}
+              value: {{ $envVar.value | quote }}
+            {{- end }}
+  volumeClaimTemplates:
+    {{- if .Values.useAffinity }}
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: beamline
+              operator: In
+              values:
+                - {{ .Values.beamline }}
+    {{- end }}
+    tolerations:
+      - key: nodetype
+        operator: Equal
+        value: {{ .Values.beamline }}
+        effect: NoSchedule
