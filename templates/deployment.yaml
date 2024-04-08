@@ -14,8 +14,7 @@ spec:
       labels:
         {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
     spec:
-      securityContext:
-        {{- toYaml .Values.securityContext | nindent 8 }}
+      
 
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
@@ -23,6 +22,10 @@ spec:
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
       initContainers:
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      resources:
+{{  toYaml .Values.resources | indent 10}}
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         command: 
@@ -101,6 +104,8 @@ spec:
             name: {{ include "ioc-chart.release" . }}
         {{- end }}
       containers:
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 8 }}
       - name: {{ include "ioc-chart.release" . }}
         image: {{ .Values.image }}
         command:
