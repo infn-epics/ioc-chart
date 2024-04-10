@@ -37,10 +37,8 @@ globalenv:
 
 
 securityContext:
-    privileged: true
     runAsUser: 1000
     runAsGroup: 1000
-    fsGroup: 1000
 
 serviceAccountName: "default"
 ########################################################################################
@@ -75,12 +73,7 @@ autosaveClaim:
 
 # default resource limits
 resources:
-  limits:
-    cpu: 500m
-    memory: 256Mi
-  requests:
-    cpu: 100m
-    memory: 64Mi
+  {}
 
 ## if enabled ioc config is taken from git the specified git repository instead of configMap
 ## 

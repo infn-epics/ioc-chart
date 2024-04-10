@@ -20,10 +20,6 @@ spec:
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
       initContainers:
-      securityContext:
-{{ toYaml .Values.securityContext | nindent 10 }}
-      resources:
-{{  toYaml .Values.resources | indent 10}}
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         command: 
@@ -60,6 +56,10 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /tmp
+        resources:
+{{- toYaml .Values.resources | nindent 12 }}
+        securityContext:
+{{ toYaml .Values.securityContext | indent 12}}
         
     {{ end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
@@ -129,8 +129,10 @@ spec:
             exec:
               command: ["bash", "-c", "{{ .Values.stop }}"]
         {{- end }}
+        resources:
+{{- toYaml .Values.resources | nindent 12 }}
         securityContext:
-{{  toYaml .Values.securityContext | indent 10}}
+{{ toYaml .Values.securityContext | indent 12}}
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
@@ -162,9 +164,6 @@ spec:
         {{- end }}
         stdin: true
         tty: true
-        
-        resources:
-{{  toYaml .Values.resources | indent 10}}
         imagePullPolicy: Always
         {{- if .Values.epicsConfiguration.name }}
         envFrom:
