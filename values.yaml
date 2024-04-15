@@ -48,7 +48,7 @@ serviceAccountName: "default"
 # these values are the only mandatory overrides. We supply image in the values.yaml
 # for each IOC instance. `ec ioc deploy` supplies ioc_name and ioc_version
 # on the command line to helm.
-image: baltig.infn.it:4567/epics-containers/infn-epics-ioc:1.0
+image: baltig.infn.it:4567/epics-containers/infn-epics-ioc:2.0
 ioc_version: 1.0
 ioc_name:
 # a volume to mount for writing data to. This can be a PVC or a hostPath
