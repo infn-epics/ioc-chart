@@ -11,8 +11,8 @@ metadata:
 spec:
   accessModes:
     - {{ .Values.dataVolume.accessMode }}
-  {{- if .Values.runAsGroup }}
-  fsGroup: .Values.runAsGroup
+  {{- if .Values.securityContext.runAsGroup }}
+  fsGroup: .Values.securityContext.runAsGroup
   {{- end }}
   resources:
     requests:
@@ -32,8 +32,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  {{- if .Values.runAsGroup }}
-  fsGroup: .Values.runAsGroup
+  {{- if .Values.securityContext.runAsGroup }}
+  fsGroup: .Values.securityContext.runAsGroup
   {{- end }}
   resources:
     requests:
@@ -51,8 +51,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  {{- if .Values.runAsGroup }}
-  fsGroup: .Values.runAsGroup
+  {{- if .Values.securityContext.runAsGroup }}
+  fsGroup: .Values.securityContext.runAsGroup
   {{- end }}
   resources:
     requests:
