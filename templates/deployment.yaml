@@ -29,7 +29,7 @@ spec:
         - -c
         - |
           id=`id`
-          cd /tmp
+          cd /pvc
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
           if [ -d temp-config ];then
             rm -rf temp-config
@@ -43,21 +43,21 @@ spec:
 
           if [ -d temp-config/{{ .Values.gitRepoConfig.path}} ];then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ];then
-                mv temp-config/* /tmp/
+                mv temp-config/* /pvc/
             else
-              mv temp-config/{{ .Values.gitRepoConfig.path}}/* /tmp/
+              mv temp-config/{{ .Values.gitRepoConfig.path}}/* /pvc/
               rm -rf temp-config
             fi
           else
-            mv temp-config/* /tmp/
+            mv temp-config/* /pvc/
           fi
 
-          # chmod a+w,a+r -R /tmp
-          ls /tmp
+          # chmod a+w,a+r -R /pvc
+          ls /pvc
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-volume
-          mountPath: /tmp
+          mountPath: /pvc
         resources:
 {{- toYaml .Values.resources | nindent 12 }}
         
