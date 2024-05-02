@@ -19,7 +19,9 @@ spec:
       {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext | indent 8}}
-        fsGroup: 1000
+      {{- if .Values.securityContext.runAsUser }}
+        fsGroup: {{.Values.securityContext.runAsUser}}
+      {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
       initContainers:
