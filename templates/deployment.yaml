@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 12}}
+{{ toYaml .Values.securityContext | indent 8}}
         fsGroup: 1000
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
