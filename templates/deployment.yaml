@@ -60,6 +60,9 @@ spec:
 {{- toYaml .Values.resources | nindent 12 }}
         securityContext:
 {{ toYaml .Values.securityContext | indent 12}}
+        {{- if .Values.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.securityContext.runAsGroup }}
+        {{- end }}
         
     {{ end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
@@ -133,6 +136,9 @@ spec:
 {{- toYaml .Values.resources | nindent 12 }}
         securityContext:
 {{ toYaml .Values.securityContext | indent 12}}
+        {{- if .Values.securityContext.runAsGroup }}
+            fsGroup: {{ .Values.securityContext.runAsGroup }}
+        {{- end }}
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
