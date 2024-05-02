@@ -24,8 +24,8 @@ spec:
         image: baltig.infn.it:4567/epics-containers/container-init
         securityContext:
 {{ toYaml .Values.securityContext | indent 12}}
-        {{- if .Values.securityContext.runAsGroup }}
-            fsGroup: {{ .Values.securityContext.runAsGroup }}
+        {{- if .Values.securityContext.runAsUser }}
+            runAsNonRoot: true
         {{- end }}
         command: 
         - sh 
@@ -109,8 +109,8 @@ spec:
         image: {{ .Values.image }}
         securityContext:
 {{ toYaml .Values.securityContext | indent 12}}
-        {{- if .Values.securityContext.runAsGroup }}
-            fsGroup: {{ .Values.securityContext.runAsGroup }}
+        {{- if .Values.securityContext.runAsUser }}
+            runAsNonRoot: true
         {{- end }}
         command:
           - bash
