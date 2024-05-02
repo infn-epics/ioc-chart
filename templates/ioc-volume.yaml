@@ -11,6 +11,9 @@ metadata:
 spec:
   accessModes:
     - {{ .Values.dataVolume.accessMode }}
+  {{- if .Values.runAsGroup }}
+  fsGroup: .Values.runAsGroup
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.dataVolume.size }}
@@ -29,6 +32,9 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  {{- if .Values.runAsGroup }}
+  fsGroup: .Values.runAsGroup
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.gitRepoConfig.size }}
@@ -45,6 +51,9 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  {{- if .Values.runAsGroup }}
+  fsGroup: .Values.runAsGroup
+  {{- end }}
   resources:
     requests:
       storage: 1Gi
