@@ -17,6 +17,8 @@ spec:
       {{ if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 12}}
       hostNetwork: {{ .Values.hostNetwork }}
       {{ if .Values.gitRepoConfig.url }}
       initContainers:
