@@ -12,7 +12,7 @@ spec:
   accessModes:
     - {{ .Values.dataVolume.accessMode }}
   {{- if .Values.securityContext.runAsGroup }}
-  fsGroup: .Values.securityContext.runAsGroup
+  fsGroup: {{ .Values.securityContext.runAsGroup }}
   {{- end }}
   resources:
     requests:
@@ -33,7 +33,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   {{- if .Values.securityContext.runAsGroup }}
-  fsGroup: .Values.securityContext.runAsGroup
+  fsGroup: {{ .Values.securityContext.runAsGroup }}
   {{- end }}
   resources:
     requests:
@@ -52,7 +52,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   {{- if .Values.securityContext.runAsGroup }}
-  fsGroup: .Values.securityContext.runAsGroup
+  fsGroup: {{ .Values.securityContext.runAsGroup }}
   {{- end }}
   resources:
     requests:
