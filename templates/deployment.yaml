@@ -184,6 +184,12 @@ spec:
           value: {{ or .Values.prefix .Release.Name | quote }}
         - name: IOC_VERSION
           value: {{ .Values.ioc_version | quote }}
+        {{- if .Values.epicsConfiguration.gateway }}
+        - name: EPICS_CA_ADDR_LIST
+          value: {{ .Values.epicsConfiguration.gateway | quote }}
+        - name: EPICS_CA_AUTO_ADDR_LIST
+          value: "NO"
+        {{- end }}
         {{- range $envVar := .Values.env }}
         - name: {{ $envVar.name }}
           value: {{ $envVar.value | quote }}
