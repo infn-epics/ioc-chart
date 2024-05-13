@@ -87,4 +87,9 @@ epicsConfiguration:
   name:    ## load the epicsConfigurationMap
   gateway: ## if defined EPICS_CA_ADDR_LIST is overridden
   
-  
+
+serial: ## open a socat connection versus the moxa server
+  ip:
+  port:
+  ptty: /var/tmp/ttyV0
+  baud: 9600

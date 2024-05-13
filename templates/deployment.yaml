@@ -112,11 +112,17 @@ spec:
         securityContext:
 {{ toYaml .Values.securityContext | indent 12}}
         command:
-          - bash
-        {{- if .Values.start }}
-        args:
-          - {{ .Values.start }}
-        {{- end }}
+          - sh 
+          - -c
+          - |
+          {{- if and (.Values.serial.ip) (.Values.serial.port) }}
+            echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
+            socat pty,link={{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}&
+          
+          {{- end }}
+          {{- if .Values.start }}
+            {{ .Values.start }}
+          {{- end }}
         ports:
           - containerPort: 5064
           - containerPort: 5065
