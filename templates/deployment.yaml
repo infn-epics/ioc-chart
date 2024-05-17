@@ -122,7 +122,14 @@ spec:
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
             echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
             socat pty,link={{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}&
-          
+            sleep 1
+            if [ -e {{.Values.serial.ptty}} ];then
+              echo "tty {{.Values.serial.ptty}}"
+            else
+              echo "## failed tty {{.Values.serial.ptty}} "
+              exit 1
+
+            fi
           {{- end }}
           {{- if .Values.start }}
             {{ .Values.start }}
