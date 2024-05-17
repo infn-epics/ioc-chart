@@ -93,3 +93,5 @@ serial: ## open a socat connection versus the moxa server
   port:
   ptty: /var/tmp/ttyV0
   baud: 9600
+
+carepeater:
