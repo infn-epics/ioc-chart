@@ -94,4 +94,4 @@ serial: ## open a socat connection versus the moxa server
   ptty: /var/tmp/ttyV0
   baud: 9600
 
-carepeater:
+carepeater: ## true if your ioc needs carepeater on
