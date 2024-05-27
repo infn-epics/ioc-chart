@@ -37,9 +37,13 @@ spec:
           cd /pvc
           echo "#!/bin/sh" > k8sreplace.sh
           chmod +x k8sreplace.sh
-          echo 'sed -i "s|__IOC_TOP__|{{.Values.ssh.workdir}}|g" $1' >> k8sreplace.sh
+          echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
+          {{- if .Values.iocprefix }}
           echo 'sed -i "s|__IOC_PREFIX__|{{.Values.iocprefix}}|g" $1' >> k8sreplace.sh
+          {{- end }}
+          {{- if .Values.iocname }}
           echo 'sed -i "s|__IOC_NAME__|{{.Values.iocname}}|g" $1' >> k8sreplace.sh
+          {{- end }}
           {{- range .Values.iocparam }}
           echo 'sed -i "s|{{.name}}|{{.value}}|g" $1' >> k8sreplace.sh
           {{- end }}
