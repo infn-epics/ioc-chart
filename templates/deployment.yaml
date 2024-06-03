@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "ioc-chart.release" . }}
   labels:
@@ -9,6 +9,7 @@ spec:
   selector:
     matchLabels:
       {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
+  serviceName: {{ include "ioc-chart.release" . }}
   template:
     metadata:
       labels:
@@ -245,3 +246,64 @@ spec:
           value: {{ .Values.beamline }}
           effect: NoSchedule
 
+volumeClaimTemplates:
+  {{- if .Values.runtimeClaim }}
+  - metadata:
+      name: runtime-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- end }}
+  {{- if .Values.opisClaim }}
+  - metadata:
+      name: opis-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- end }}
+  {{- if .Values.nfsv2TftpClaim }}
+  - metadata:
+      name: nfsv2-tftp-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- end }}
+  - metadata:
+      name: autosave-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- if .Values.dataVolume.pvc }}
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- end }}
+  {{- if .Values.gitRepoConfig.url }}
+  - metadata:
+      name: config-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- else }}
+  - metadata:
+      name: config-volume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  {{- end }}
