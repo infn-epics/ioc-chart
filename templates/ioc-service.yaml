@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
-
+  clusterIP: None
   ports:
   - name: ca-port0-tcp
     port: 5064  # 
