@@ -23,7 +23,7 @@ Generate an IP address from a string name.
 Generate an IP address from a string name.
 */}}
 {{- define "allocateIpFromName" -}}
-{{- $name := .Release.Name | quote -}}
+{{- $name := printf "%s.%s" .Release.Name .Release.Namespace -}}
 {{- $baseIp := .Values.baseIp -}}
 {{- $startIp := .Values.startIp | int -}}
 {{- $ipRange := .Values.ipRange | int -}}
