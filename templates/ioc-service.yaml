@@ -5,7 +5,11 @@ metadata:
 spec:
   selector:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
+  {{- if .Values.baseIp }}
+  clusterIP: {{ include "allocateIpFromName" . }}
+  {{- else }}
   clusterIP: None
+  {{- end }}
   ports:
   - name: ca-port0-tcp
     port: 5064  # 

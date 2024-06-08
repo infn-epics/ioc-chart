@@ -13,6 +13,32 @@
 {{- .Release.Name }}
 {{- end -}}
 
+{{/*
+Generate an IP address from a string name.
+*/}}
+{{/*
+Generate an IP address from a string name.
+*/}}
+{{/*
+Generate an IP address from a string name.
+*/}}
+{{- define "allocateIpFromName" -}}
+{{- $name := .Release.Name | quote -}}
+{{- $baseIp := .Values.baseIp -}}
+{{- $startIp := .Values.startIp | int -}}
+{{- $ipRange := .Values.ipRange | int -}}
+{{- $debug := "" -}}
+{{- $conversion := atoi (adler32sum $name) -}}
+{{- $ipSuffix := add $startIp (mod $conversion $ipRange) -}}
+{{- $thirdOctet := div $ipSuffix 256 -}}
+{{- $fourthOctet := mod $ipSuffix 256 -}}
+{{- printf "%s.%d.%d" $baseIp $thirdOctet $fourthOctet -}}
+{{- end -}}
+
+
+
+
+
 {{- define "ioc-chart.labels" -}}
 helm.sh/chart: {{ include "ioc-chart.chart" . }}
 {{ include "ioc-chart.selectorLabels" . }}
