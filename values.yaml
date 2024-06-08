@@ -87,7 +87,7 @@ gitRepoConfig:
 epicsConfiguration:
   name:    ## load the epicsConfigurationMap
   gateway: ## if defined EPICS_CA_ADDR_LIST is overridden
-  
+  staticIp: true ## bug CA/PVA
 
 serial: ## open a socat connection versus the moxa server
   ip:
