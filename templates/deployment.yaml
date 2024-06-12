@@ -15,21 +15,21 @@ spec:
       labels:
         {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
     spec:
-      {{ if .Values.serviceAccountName }}
+      {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8}}
-      {{- if .Values.securityContext.runAsUser }}
+        {{ toYaml .Values.securityContext | indent 8 }}
+        {{- if .Values.securityContext.runAsUser }}
         fsGroup: {{.Values.securityContext.runAsUser}}
-      {{- end }}
+        {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ if .Values.gitRepoConfig.url }}
+      {{- if .Values.gitRepoConfig.url }}
       initContainers:
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         securityContext:
-{{ toYaml .Values.securityContext | indent 12}}
+          {{ toYaml .Values.securityContext | indent 12 }}
         command: 
         - sh 
         - -c
@@ -78,9 +78,8 @@ spec:
         - name: config-volume
           mountPath: /pvc
         resources:
-{{- toYaml .Values.resources | nindent 12 }}
-        
-    {{ end }}
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
       volumes:
         {{- if .Values.runtimeClaim }}
@@ -98,7 +97,6 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.nfsv2TftpClaim }}
         {{- end }}
-        
         - name: autosave-volume
           persistentVolumeClaim:
             {{- if .Values.autosave }}
@@ -115,20 +113,28 @@ spec:
         - name: config-volume
           persistentVolumeClaim:
             claimName: {{ include "ioc-chart.release" . }}-gitconfig
-        {{- else}}
+        {{- else }}
         - name: config-volume
           configMap:
             name: {{ include "ioc-chart.release" . }}
         {{- end }}
+
+        {{- range .Values.nfsMounts }}
+        - name: {{ .name }}
+          nfs:
+            server: {{ .server }}
+            path: {{ .path }}
+        {{- end }}
+
       containers:
       - name: {{ include "ioc-chart.release" . }}
         image: {{ .Values.image }}
         securityContext:
-{{ toYaml .Values.securityContext | indent 12}}
+          {{ toYaml .Values.securityContext | indent 12 }}
         command:
-          - sh 
-          - -c
-          - |
+        - sh 
+        - -c
+        - |
           {{- if .Values.carepeater }}
             echo "Starting caRepeater"
             caRepeater&
@@ -142,15 +148,14 @@ spec:
             else
               echo "## failed tty {{.Values.serial.ptty}} "
               exit 1
-
             fi
           {{- end }}
           {{- if .Values.start }}
             {{ .Values.start }}
           {{- end }}
         ports:
-          - containerPort: 5064
-          - containerPort: 5065
+        - containerPort: 5064
+        - containerPort: 5065
         {{- if .Values.liveness }}
         livenessProbe:
           exec:
@@ -161,14 +166,13 @@ spec:
           periodSeconds: 10
         {{- end }}
         {{- if .Values.stop }}
-
         lifecycle:
           preStop:
             exec:
               command: ["bash", "-c", "{{ .Values.stop }}"]
         {{- end }}
         resources:
-{{- toYaml .Values.resources | nindent 12 }}
+          {{- toYaml .Values.resources | nindent 12 }}
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
@@ -187,7 +191,7 @@ spec:
         - name: nfsv2-tftp-volume
           mountPath: /nfsv2-tftp
           subPath: "{{ .Values.beamline }}/{{ include "ioc-chart.release" . }}"
-          {{- end }}
+        {{- end }}
         {{- if .Values.runtimeClaim }}
         - name: runtime-volume
           mountPath: /epics/runtime
@@ -198,13 +202,17 @@ spec:
           mountPath: /epics/opi
           subPath: "{{ include "ioc-chart.release" . }}"
         {{- end }}
+        {{- range .Values.nfsMounts }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
         stdin: true
         tty: true
         imagePullPolicy: Always
         {{- if .Values.epicsConfiguration.name }}
         envFrom:
-          - configMapRef:
-              name: {{ .Values.epicsConfiguration.name }}
+        - configMapRef:
+            name: {{ .Values.epicsConfiguration.name }}
         {{- end }}
         env:
         - name: IOCSH_PS1
@@ -241,10 +249,10 @@ spec:
                   - {{ .Values.beamline }}
       {{- end }}
       tolerations:
-        - key: nodetype
-          operator: Equal
-          value: {{ .Values.beamline }}
-          effect: NoSchedule
+      - key: nodetype
+        operator: Equal
+        value: {{ .Values.beamline }}
+        effect: NoSchedule
 
   volumeClaimTemplates:
     {{- if .Values.runtimeClaim }}

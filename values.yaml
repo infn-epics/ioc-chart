@@ -98,3 +98,13 @@ carepeater: ## true if your ioc needs carepeater on
 baseIp:
 startIp: 1
 ipRange: 65536  # /16 range (256 * 256)
+
+nfsMounts:
+  # - name: nfs-volume-1
+  #   server: mynfsserver
+  #   path: /data_epik8s
+  #   mountPath: /nfsdata
+  # - name: nfs-volume-2
+  #   server: nfs-server-2.example.com
+  #   path: /remote/path/2
+  #   mountPath: /local/mount/path/2
