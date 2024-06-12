@@ -139,6 +139,7 @@ spec:
             echo "Starting caRepeater"
             caRepeater&
           {{- end }}
+          
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
             echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
             socat pty,link={{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}&
