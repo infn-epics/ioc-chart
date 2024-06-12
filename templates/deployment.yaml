@@ -217,6 +217,14 @@ spec:
               name: {{ .Values.epicsConfiguration.name }}
         {{- end }}
         env:
+        {{- range .Values.nfsMounts }}
+        - name: {{ .name | upper }}_SERVER
+          value: {{ .server | quote }}
+        - name: {{ .name | upper }}_SERVER_PATH
+          value: {{ .path | quote }}
+        - name: {{ .name | upper }}_DIR
+          value: {{ .mountPath | quote }}
+        {{- end }}
         - name: IOCSH_PS1
           value: "{{ include "ioc-chart.release" . }} > "
         - name: IOC_NAME
