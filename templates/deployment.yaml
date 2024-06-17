@@ -143,7 +143,7 @@ spec:
             caRepeater&
           {{- end }}
           {{- range .Values.nfsMounts }}
-              mkdir -p {{ .mountPath | quote }}/{{.Values.iocname}}
+              mkdir -p {{ .mountPath | quote }}/{{$.Values.iocname}}
           {{- end }}
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
             echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
