@@ -15,23 +15,23 @@ spec:
       labels:
         {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
     spec:
-      {{ if .Values.serviceAccountName }}
+      {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
       {{- end }}
       securityContext:
-{{ toYaml .Values.securityContext | indent 8}}
+{{ toYaml .Values.securityContext | indent 8 }}
       {{- if .Values.securityContext.runAsUser }}
-        fsGroup: {{.Values.securityContext.runAsUser}}
+        fsGroup: {{ .Values.securityContext.runAsUser }}
       {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ if .Values.gitRepoConfig.url }}
+      {{- if .Values.gitRepoConfig.url }}
       initContainers:
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         securityContext:
-{{ toYaml .Values.securityContext | indent 12}}
-        command: 
-        - sh 
+{{ toYaml .Values.securityContext | indent 12 }}
+        command:
+        - sh
         - -c
         - |
           id=`id`
@@ -40,22 +40,22 @@ spec:
           chmod +x k8sreplace.sh
           echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
           {{- if .Values.iocprefix }}
-          echo 'sed -i "s|__IOC_PREFIX__|{{.Values.iocprefix}}|g" $1' >> k8sreplace.sh
+          echo 'sed -i "s|__IOC_PREFIX__|{{ .Values.iocprefix }}|g" $1' >> k8sreplace.sh
           {{- end }}
           {{- if .Values.iocname }}
-          echo 'sed -i "s|__IOC_NAME__|{{.Values.iocname}}|g" $1' >> k8sreplace.sh
+          echo 'sed -i "s|__IOC_NAME__|{{ .Values.iocname }}|g" $1' >> k8sreplace.sh
           {{- end }}
           {{- range .Values.nfsMounts }}
-                  echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
+          echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
           {{- end }}
           {{- range .Values.iocparam }}
-          echo 'sed -i "s|{{.name}}|{{.value}}|g" $1' >> k8sreplace.sh
+          echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
           {{- end }}
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
-          if [ -d temp-config ];then
+          if [ -d temp-config ]; then
             rm -rf temp-config
           fi
-          if [ -n "{{ .Values.gitRepoConfig.branch }}" ];then
+          if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
             git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           else
             git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
@@ -63,11 +63,11 @@ spec:
           find temp-config/ -type f -exec ./k8sreplace.sh {} \;
           echo "* applied substitutions "`cat ./k8sreplace.sh`
 
-          if [ -d temp-config/{{ .Values.gitRepoConfig.path}} ];then
-            if [ "{{ .Values.gitRepoConfig.path }}" == "." ];then
-                mv temp-config/* /pvc/
+          if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
+            if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
+              mv temp-config/* /pvc/
             else
-              mv temp-config/{{ .Values.gitRepoConfig.path}}/* /pvc/
+              mv temp-config/{{ .Values.gitRepoConfig.path }}/* /pvc/
               rm -rf temp-config
             fi
           else
@@ -81,89 +81,87 @@ spec:
         - name: config-volume
           mountPath: /pvc
         resources:
-{{- toYaml .Values.resources | nindent 12 }}
-        
-    {{ end }}
+{{ toYaml .Values.resources | indent 12 }}
+      {{- end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
       volumes:
-        {{- if .Values.runtimeClaim }}
-        - name: runtime-volume
-          persistentVolumeClaim:
-            claimName: {{ .Values.runtimeClaim }}
-        {{- end }}
-        {{- if .Values.opisClaim }}
-        - name: opis-volume
-          persistentVolumeClaim:
-            claimName: {{ .Values.opisClaim }}
-        {{- end }}
-        {{- if .Values.nfsv2TftpClaim }}
-        - name: nfsv2-tftp-volume
-          persistentVolumeClaim:
-            claimName: {{ .Values.nfsv2TftpClaim }}
-        {{- end }}
-        
-        - name: autosave-volume
-          persistentVolumeClaim:
-            {{- if .Values.autosave }}
-            claimName: {{ .Values.autosave }}
-            {{- else }}
-            claimName: {{ include "ioc-chart.release" . }}-autosave
-            {{- end }}
-        {{- if .Values.dataVolume.pvc }}
-        - name: data-volume
-          persistentVolumeClaim:
-            claimName: {{ include "ioc-chart.release" . }}-data
-        {{- end }}
-        {{- if .Values.gitRepoConfig.url }}
-        - name: config-volume
-          persistentVolumeClaim:
-            claimName: {{ include "ioc-chart.release" . }}-gitconfig
-        {{- else}}
-        - name: config-volume
-          configMap:
-            name: {{ include "ioc-chart.release" . }}
-        {{- end }}
-        
-        {{- range .Values.nfsMounts }}
-        - name: {{ .name }}
-          nfs:
-            server: {{ .server }}
-            path: {{ .path }}
-        {{- end }}
+      {{- if .Values.runtimeClaim }}
+      - name: runtime-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.runtimeClaim }}
+      {{- end }}
+      {{- if .Values.opisClaim }}
+      - name: opis-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.opisClaim }}
+      {{- end }}
+      {{- if .Values.nfsv2TftpClaim }}
+      - name: nfsv2-tftp-volume
+        persistentVolumeClaim:
+          claimName: {{ .Values.nfsv2TftpClaim }}
+      {{- end }}
+      - name: autosave-volume
+        persistentVolumeClaim:
+          {{- if .Values.autosave }}
+          claimName: {{ .Values.autosave }}
+          {{- else }}
+          claimName: {{ include "ioc-chart.release" . }}-autosave
+          {{- end }}
+      {{- if .Values.dataVolume.pvc }}
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: {{ include "ioc-chart.release" . }}-data
+      {{- end }}
+      {{- if .Values.gitRepoConfig.url }}
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: {{ include "ioc-chart.release" . }}-gitconfig
+      {{- else }}
+      - name: config-volume
+        configMap:
+          name: {{ include "ioc-chart.release" . }}
+      {{- end }}
+      {{- range .Values.nfsMounts }}
+      - name: {{ .name }}
+        nfs:
+          server: {{ .server }}
+          path: {{ .path }}
+      {{- end }}
       containers:
       - name: {{ include "ioc-chart.release" . }}
         image: {{ .Values.image }}
         securityContext:
-{{ toYaml .Values.securityContext | indent 12}}
+{{ toYaml .Values.securityContext | indent 12 }}
         command:
-          - sh 
-          - -c
-          - |
+        - sh
+        - -c
+        - |
           {{- if .Values.carepeater }}
-            echo "Starting caRepeater"
-            caRepeater&
+          echo "Starting caRepeater"
+          caRepeater &
           {{- end }}
           {{- range .Values.nfsMounts }}
-              mkdir -p {{ .mountPath | quote }}/{{$.Values.iocname}}
+          mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
           {{- end }}
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
-            echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
-            socat pty,link={{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}&
-            sleep 1
-            if [ -e {{.Values.serial.ptty}} ];then
-              echo "tty {{.Values.serial.ptty}}"
-            else
-              echo "## failed tty {{.Values.serial.ptty}} "
-              exit 1
-
-            fi
+          echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
+          socat pty,link={{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }} &
+          sleep 1
+          if [ -e {{ .Values.serial.ptty }} ]; then
+            echo "tty {{ .Values.serial.ptty }}"
+          else
+            echo "## failed tty {{ .Values.serial.ptty }} "
+            exit 1
+          fi
           {{- end }}
           {{- if .Values.start }}
-            {{ .Values.start }}
+          {{ .Values.start }}
           {{- end }}
         ports:
-          - containerPort: 5064
-          - containerPort: 5065
+        - containerPort: 5064
+        - containerPort: 5065
+        - containerPort: 5075
+        - containerPort: 5076
         {{- if .Values.liveness }}
         livenessProbe:
           exec:
@@ -174,14 +172,13 @@ spec:
           periodSeconds: 10
         {{- end }}
         {{- if .Values.stop }}
-
         lifecycle:
           preStop:
             exec:
               command: ["bash", "-c", "{{ .Values.stop }}"]
         {{- end }}
         resources:
-{{- toYaml .Values.resources | nindent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
@@ -194,13 +191,13 @@ spec:
           mountPath: {{ .Values.dataVolume.hostPath }}
           {{- if .Values.dataVolume.hostPath }}
           mountPropagation: HostToContainer
-          {{- end}}
+          {{- end }}
         {{- end }}
         {{- if .Values.nfsv2TftpClaim }}
         - name: nfsv2-tftp-volume
           mountPath: /nfsv2-tftp
           subPath: "{{ .Values.beamline }}/{{ include "ioc-chart.release" . }}"
-          {{- end }}
+        {{- end }}
         {{- if .Values.runtimeClaim }}
         - name: runtime-volume
           mountPath: /epics/runtime
@@ -220,8 +217,8 @@ spec:
         imagePullPolicy: Always
         {{- if .Values.epicsConfiguration.name }}
         envFrom:
-          - configMapRef:
-              name: {{ .Values.epicsConfiguration.name }}
+        - configMapRef:
+            name: {{ .Values.epicsConfiguration.name }}
         {{- end }}
         env:
         {{- range .Values.nfsMounts }}
@@ -263,14 +260,13 @@ spec:
               - key: beamline
                 operator: In
                 values:
-                  - {{ .Values.beamline }}
+                - {{ .Values.beamline }}
       {{- end }}
       tolerations:
-        - key: nodetype
-          operator: Equal
-          value: {{ .Values.beamline }}
-          effect: NoSchedule
-
+      - key: nodetype
+        operator: Equal
+        value: {{ .Values.beamline }}
+        effect: NoSchedule
   volumeClaimTemplates:
     {{- if .Values.runtimeClaim }}
     - metadata:

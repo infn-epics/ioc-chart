@@ -27,4 +27,20 @@ spec:
     port: 5065  #
     targetPort: 5065  # 
     protocol: UDP
+  - name: pva-port0-tcp
+    port: 5075  # 
+    targetPort: 5075  # 
+    protocol: TCP
+  - name: pva-port0-udp
+    port: 5075  # 
+    targetPort: 5075  # 
+    protocol: UDP
+  - name: pva-port1-tcp
+    port: 5076  # 
+    targetPort: 5076  # 
+    protocol: TCP
+  - name: pva-port1-udp
+    port: 5076  #
+    targetPort: 5076  # 
+    protocol: UDP
 

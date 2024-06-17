@@ -1,0 +1,47 @@
+asset: https://confluence.infn.it/x/nYD8DQ
+charturl: https://baltig.infn.it/epics-containers/ioc-chart.git
+dataVolume:
+  accessMode: ReadWriteOnce
+  size: 8Mi
+devgroup: rf
+devtype: motor
+gitinit: true
+image: baltig.infn.it:4567/epics-containers/infn-epics-ioc:2.30b4
+iocprefix: 'SPARC:MOT:VITARA01:'
+name: vitara
+nfsMounts:
+- mountPath: /nfs/data
+  name: data
+  path: /data_epik8s/data
+  server: 192.168.197.157
+- mountPath: /nfs/autosave
+  name: autosave
+  path: /data_epik8s/autosave
+  server: 192.168.197.157
+- mountPath: /nfs/config
+  name: config
+  path: /data_epik8s/config
+  server: 192.168.197.157
+
+beamline: "sparc"
+iocname: "vitara"
+baseIp: "172.30"
+startIp: 1
+ipRange: 65536
+epicsConfiguration:
+  name: "epics-configuration"
+gitRepoConfig:
+  url: https://baltig.infn.it/lnf-da-control/epik8-sparc.git
+  path: config/iocs/vitara
+  branch: master
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+serviceAccount:
+  create: false
+  annotations: {}
+  name: default
