@@ -45,6 +45,9 @@ spec:
           {{- if .Values.iocname }}
           echo 'sed -i "s|__IOC_NAME__|{{.Values.iocname}}|g" $1' >> k8sreplace.sh
           {{- end }}
+          {{- range .Values.nfsMounts }}
+                  echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
+          {{- end }}
           {{- range .Values.iocparam }}
           echo 'sed -i "s|{{.name}}|{{.value}}|g" $1' >> k8sreplace.sh
           {{- end }}
@@ -139,7 +142,9 @@ spec:
             echo "Starting caRepeater"
             caRepeater&
           {{- end }}
-          
+          {{- range .Values.nfsMounts }}
+              mkdir -p {{ .mountPath | quote }}/{{.Values.iocname}}
+          {{- end }}
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
             echo "opening {{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}"
             socat pty,link={{.Values.serial.ptty}},raw,echo=0,b{{.Values.serial.baud}} tcp:{{.Values.serial.ip}}:{{.Values.serial.port}}&
