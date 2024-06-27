@@ -99,6 +99,9 @@ baseIp:
 startIp: 1
 ipRange: 65536  # /16 range (256 * 256)
 
+ca_server_port: 5064
+pva_server_port: 5075
+
 nfsMounts:
   # - name: nfs-volume-1
   #   server: mynfsserver
