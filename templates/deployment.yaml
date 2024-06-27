@@ -160,9 +160,9 @@ spec:
         ports:
         
         - containerPort: {{ .Values.ca_server_port | default 5064 }}
-        - containerPort: {{ add1(.Values.ca_server_port | default 5064) }}
+        - containerPort: {{ add1 (.Values.ca_server_port | default 5064) }}
         - containerPort: {{ .Values.pva_server_port | default 5075 }}
-        - containerPort: {{ add1( .Values.pva_broadcast_port | default 5075) }}
+        - containerPort: {{ add1 (.Values.pva_broadcast_port | default 5075) }}
         {{- if .Values.liveness }}
         livenessProbe:
           exec:
