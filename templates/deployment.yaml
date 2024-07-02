@@ -41,18 +41,23 @@ spec:
           echo "#!/bin/sh" > k8sreplace.sh
           chmod +x k8sreplace.sh
           echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
+          
           {{- if .Values.iocprefix }}
           echo 'sed -i "s|__IOC_PREFIX__|{{ .Values.iocprefix }}|g" $1' >> k8sreplace.sh
-          {{- end -}}
+          {{- end }}
+
           {{- if .Values.iocname }}
           echo 'sed -i "s|__IOC_NAME__|{{ .Values.iocname }}|g" $1' >> k8sreplace.sh
-          {{- end -}}
+          {{- end }}
+
           {{- range .Values.nfsMounts }}
           echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
-          {{- end -}}
+          {{- end }}
+
           {{- range .Values.iocparam }}
           echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
-          {{- end -}}
+          {{- end }}
+
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
           echo "* appling substitutions "`cat /pvc/k8sreplace.sh`
 
