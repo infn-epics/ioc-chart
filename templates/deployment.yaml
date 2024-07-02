@@ -73,7 +73,7 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
-          find pvc/ -type f -exec ./k8sreplace.sh {} \;
+          find /pvc -type f -exec ./k8sreplace.sh {} \;
           echo "* applied substitutions "`cat ./k8sreplace.sh`
 
           # chmod a+w,a+r -R /pvc
