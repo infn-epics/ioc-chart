@@ -36,6 +36,7 @@ spec:
         - |
           id=`id`
           cd /pvc
+          rm -rf *
           echo "#!/bin/sh" > k8sreplace.sh
           chmod +x k8sreplace.sh
           echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
@@ -60,8 +61,7 @@ spec:
           else
             git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           fi
-          find temp-config/ -type f -exec ./k8sreplace.sh {} \;
-          echo "* applied substitutions "`cat ./k8sreplace.sh`
+          
 
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
@@ -73,6 +73,8 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
+          find pvc/ -type f -exec ./k8sreplace.sh {} \;
+          echo "* applied substitutions "`cat ./k8sreplace.sh`
 
           # chmod a+w,a+r -R /pvc
           ls /pvc
