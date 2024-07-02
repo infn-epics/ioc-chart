@@ -35,8 +35,8 @@ spec:
         - -c
         - |
           id=`id`
-          cd /pvc
-          rm -rf *
+          rm -rf /pvc* temp-config/
+
           echo "#!/bin/sh" > k8sreplace.sh
           chmod +x k8sreplace.sh
           echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
