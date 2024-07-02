@@ -35,7 +35,8 @@ spec:
         - -c
         - |
           id=`id`
-          rm -rf /pvc* temp-config/
+          cd /pvc
+          rm -rf *
 
           echo "#!/bin/sh" > k8sreplace.sh
           chmod +x k8sreplace.sh
@@ -62,9 +63,12 @@ spec:
             git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           fi
           
+          find /temp-config//{{ .Values.gitRepoConfig.path }} -type f -exec ./k8sreplace.sh {} \;
+          echo "* applied substitutions "`cat ./k8sreplace.sh`
 
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
+
               mv temp-config/* /pvc/
             else
               mv temp-config/{{ .Values.gitRepoConfig.path }}/* /pvc/
@@ -73,8 +77,6 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
-          find /pvc -type f -exec ./k8sreplace.sh {} \;
-          echo "* applied substitutions "`cat ./k8sreplace.sh`
 
           # chmod a+w,a+r -R /pvc
           ls /pvc
