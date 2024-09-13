@@ -46,6 +46,10 @@ spec:
           echo 'sed -i "s|__IOC_PREFIX__|{{ .Values.iocprefix }}|g" $1' >> k8sreplace.sh
           {{- end }}
 
+          {{- if .Values.iocroot }}
+          echo 'sed -i "s|__IOC_ROOT__|{{ .Values.iocroot }}|g" $1' >> k8sreplace.sh
+          {{- end }}
+
           {{- if .Values.iocname }}
           echo 'sed -i "s|__IOC_NAME__|{{ .Values.iocname }}|g" $1' >> k8sreplace.sh
           {{- end }}
