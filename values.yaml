@@ -14,7 +14,11 @@ hostNetwork: false
 # Not using this now that we have cluster per beamline
 # However if you are using one cluster for multiple beamlines / domains
 # Then label the local nodes for each beamline and switch to true
+
 useAffinity: false
+affinityKey: "kubernetes.io/hostname"
+affinityValue: ""
+
 
 # root folder for ioc source/binaries inside generic IOC container
 iocFolder: /epics/ioc

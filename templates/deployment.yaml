@@ -266,16 +266,16 @@ spec:
         - name: {{ $envVar.name }}
           value: {{ $envVar.value | quote }}
         {{- end }}
-      {{- if .Values.useAffinity }}
+      {{- if and (.Values.useAffinity) (.Values.affinityKey) }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: beamline
+              - key: {{.Values.affinityKey}}
                 operator: In
                 values:
-                - {{ .Values.beamline }}
+                - {{ .Values.affinityValue }}
       {{- end }}
       tolerations:
       - key: nodetype
