@@ -7,7 +7,7 @@ metadata:
 {{- range .Values.networks }}
   name: {{ .name }}
   annotations:
-    k8s.v1.cni.cncf.io/networks: {{.annotations}}
+    k8s.v1.cni.cncf.io/networks: {{.annotation}}
 {{- end }}
 spec:
   replicas: 1
