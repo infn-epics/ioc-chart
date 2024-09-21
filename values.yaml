@@ -116,3 +116,7 @@ nfsMounts:
   #   server: nfs-server-2.example.com
   #   path: /remote/path/2
   #   mountPath: /local/mount/path/2
+
+networks:
+  # - name:
+  #   annotations: "" 
