@@ -4,10 +4,7 @@ metadata:
   name: {{ include "ioc-chart.release" . }}
   labels:
     {{- include "ioc-chart.labels" . | nindent 4 }}
-{{- range .Values.networks }}
-  annotations:
-    k8s.v1.cni.cncf.io/networks: {{.annotation}}
-{{- end }}
+
 spec:
   replicas: 1
   selector:
@@ -18,6 +15,11 @@ spec:
     metadata:
       labels:
         {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
+
+{{- range .Values.networks }}
+      annotations:
+        k8s.v1.cni.cncf.io/networks: {{.annotation}}
+{{- end }}
     spec:
       {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
