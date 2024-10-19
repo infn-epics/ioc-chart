@@ -100,9 +100,8 @@ serial: ## open a socat connection versus the moxa server
   baud: 9600
 
 carepeater: ## true if your ioc needs carepeater on
-baseIp:
-startIp: 1
-ipRange: 65536  # /16 range (256 * 256)
+
+staticIP: ## impose a static IP
 
 ca_server_port: 5064
 pva_server_port: 5075

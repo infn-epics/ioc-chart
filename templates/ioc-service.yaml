@@ -5,8 +5,8 @@ metadata:
 spec:
   selector:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
-  {{- if .Values.baseIp }}
-  clusterIP: {{ include "allocateIpFromName" . }}
+  {{- if .Values.staticIP }}
+  clusterIP: {{.Values.staticIP}}
   {{- else }}
   clusterIP: None
   {{- end }}

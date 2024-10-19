@@ -253,9 +253,9 @@ spec:
         - name: IOCSH_PS1
           value: "{{ include "ioc-chart.release" . }} > "
         - name: IOC_NAME
-          value: "{{ .Release.Name }}"
+          value: {{ .Values.iocname | quote }}
         - name: IOC_PREFIX
-          value: {{ or .Values.prefix .Release.Name | quote }}
+          value: {{ .Values.iocprefix | quote }}
         - name: IOC_VERSION
           value: {{ .Values.ioc_version | quote }}
         {{- if .Values.epicsConfiguration.gateway }}
