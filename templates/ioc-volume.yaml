@@ -17,36 +17,5 @@ spec:
 
 ---
 {{- end }}
-{{ if .Values.gitRepoConfig.url }}
 
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: {{ include "ioc-chart.release" . }}-gitconfig
-  labels:
-    app: {{ include "ioc-chart.release" . }}
-    beamline: {{ .Values.beamline | quote }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.gitRepoConfig.size }}
----
-{{- end }}
-{{- if not .Values.autosaveClaim }}
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ include "ioc-chart.release" . }}-autosave
-  labels:
-    app: {{ include "ioc-chart.release" . }}
-    beamline: {{ .Values.beamline | quote }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-{{- end }}
 

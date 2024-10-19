@@ -340,12 +340,4 @@ spec:
         resources:
           requests:
             storage: 1Gi
-    {{- else }}
-    - metadata:
-        name: config-volume
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
     {{- end }}
