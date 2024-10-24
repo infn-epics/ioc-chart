@@ -104,7 +104,7 @@ spec:
           fi
 
           {{- range .Values.iocinit }}
-          echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" >> init.cmd
+          echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" > init.cmd
           {{- end }}
           
           # chmod a+w,a+r -R /pvc
