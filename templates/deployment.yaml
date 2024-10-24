@@ -63,8 +63,12 @@ spec:
           echo 'sed -i "s|__IOC_NAME__|{{ .Values.iocname }}|g" $1' >> k8sreplace.sh
           {{- end }}
 
-          {{- range .Values.nfsMounts }}
-          echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
+          {{- if .Values.nfsMounts }}
+            {{- range .Values.nfsMounts }}
+            echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
+            {{- end }}
+          {{- else }}
+              echo 'sed -i "s|__CONFIG_DIR__|/tmp|g" $1' >> k8sreplace.sh
           {{- end }}
 
           {{- range .Values.iocparam }}
