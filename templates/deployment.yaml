@@ -102,9 +102,9 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
-
+          echo "## Intialization $prefix `date`" > init.cmd
           {{- range .Values.iocinit }}
-          echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" > init.cmd
+          echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" >> init.cmd
           {{- end }}
           
           # chmod a+w,a+r -R /pvc
