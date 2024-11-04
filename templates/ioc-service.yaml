@@ -7,8 +7,6 @@ spec:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
   {{- if .Values.staticIP }}
   clusterIP: {{.Values.staticIP}}
-  {{- else }}
-  clusterIP: None
   {{- end }}
   ports:
   - name: ca-server-tcp
