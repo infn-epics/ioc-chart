@@ -9,7 +9,7 @@ metadata:
     is_ioc: "True"
 data:
   config.yaml: |
-    {{ toYaml .Values | indent 4 }}
+    {{- toYaml .Values | indent 4 }}
     {{- if .Values.nfsMounts }}
     {{- range .Values.nfsMounts }}
     {{ .name | lower }}_dir: {{ .mountPath }}/{{ $.Values.iocname }}
