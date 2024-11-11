@@ -100,6 +100,7 @@ spec:
             fi
           fi
           echo "* copy ioc config and replace any .j2 with rendered values"
+          ls -altr /etc/config-dump/
           cp /etc/config-dump/config.yaml temp-config/iocconfig
           find temp-config/ -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
 
@@ -236,6 +237,9 @@ spec:
         - name: autosave-volume
           mountPath: /autosave
         {{- end }}
+        - name: config-dump
+          mountPath: /etc/config-dump
+          subPath: config.yaml
         {{- if .Values.dataVolume.pvc }}
         - name: data-volume
           mountPath: {{ .Values.dataVolume.hostPath }}
