@@ -19,7 +19,6 @@ useAffinity: false
 affinityKey: "kubernetes.io/hostname"
 affinityValue: ""
 
-
 # root folder for ioc source/binaries inside generic IOC container
 iocFolder: /epics/ioc
 iocConfig: /epics/ioc/config
