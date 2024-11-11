@@ -130,7 +130,7 @@ spec:
           mountPath: /pvc
         - name: config-dump
           mountPath: /etc/config-dump
-          subPath: config.yaml
+          
       resources:
 {{ toYaml .Values.resources | indent 12 }}
       {{- end }}
@@ -239,7 +239,6 @@ spec:
         {{- end }}
         - name: config-dump
           mountPath: /etc/config-dump
-          subPath: config.yaml
         {{- if .Values.dataVolume.pvc }}
         - name: data-volume
           mountPath: {{ .Values.dataVolume.hostPath }}
