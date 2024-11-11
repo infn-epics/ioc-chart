@@ -31,7 +31,7 @@ spec:
       {{- end }}
       {{- if .Values.hostNetwork }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {- end }
+      {{- end }}
       {{- if .Values.gitRepoConfig.url }}
       initContainers:
       - name: init-container-git
