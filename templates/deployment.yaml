@@ -99,7 +99,10 @@ spec:
               git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
             fi
           fi
-          
+          echo "* copy ioc config and replace any .j2 with rendered values"
+          cp /etc/config-dump/config.yaml temp-config/iocconfig
+          find temp-config/ -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
+
 
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
@@ -124,7 +127,10 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /pvc
-        resources:
+        - name: config-dump
+          mountPath: /etc/config-dump
+          subPath: config.yaml
+      resources:
 {{ toYaml .Values.resources | indent 12 }}
       {{- end }}
       terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
@@ -160,11 +166,10 @@ spec:
       - name: config-volume
         persistentVolumeClaim:
           claimName: {{ include "ioc-chart.release" . }}-gitconfig
-      {{- else }}
-      - name: config-volume
+      {{- end }}
+      - name: config-dump
         configMap:
           name: {{ include "ioc-chart.release" . }}
-      {{- end }}
       {{- range .Values.nfsMounts }}
       - name: {{ .name }}
         nfs:

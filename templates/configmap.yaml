@@ -9,11 +9,7 @@ metadata:
     ioc_version: {{ .Values.ioc_version | quote }}
     is_ioc: "True"
 data:
-{{- if .Values.gitRepoConfig.url }}
-  url: {{ .Values.gitRepoConfig.url }}
-  branch: "{{.Values.gitRepoConfig.branch}}"
-  path: {{ .Values.gitRepoConfig.path | quote }}
-{{- else}}
-{{ (.Files.Glob "config/*").AsConfig | indent 2 }}
-{{- end }}
+  config.yaml: |
+    {{ toYaml .Values | indent 4 }}
+
   
