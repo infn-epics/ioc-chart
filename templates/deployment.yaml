@@ -99,12 +99,7 @@ spec:
               git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
             fi
           fi
-          echo "* copy ioc config and replace any .j2 with rendered values"
-          ls -altr /etc/config-dump/
-          cp /etc/config-dump/config.yaml temp-config/iocconfig
-          find temp-config/ -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
-
-
+          
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
               find temp-config/ -type f -exec /pvc/k8sreplace.sh {} \;
@@ -204,6 +199,9 @@ spec:
             exit 1
           fi
           {{- end }}
+          echo "* copy ioc config and replace any .j2 with rendered values"
+          find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
+
           {{- if .Values.start }}
           {{ .Values.start }}
           {{- end }}

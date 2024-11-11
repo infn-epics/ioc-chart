@@ -17,4 +17,4 @@ data:
     config_dir: "/tmp"
     {{- end }}
     ioctop: {{.Values.iocConfig}}
-    {{ toYaml .Values | indent 4 }}
+    {{ toYaml .Values }}
