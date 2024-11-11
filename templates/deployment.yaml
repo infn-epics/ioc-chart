@@ -71,9 +71,9 @@ spec:
               echo 'sed -i "s|__CONFIG_DIR__|/tmp|g" $1' >> k8sreplace.sh
           {{- end }}
 
-          {{- range .Values.iocparam }}
-          echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
-          {{- end }}
+          # {{- range .Values.iocparam }}
+          # echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
+          # {{- end }}
 
           
 
