@@ -201,9 +201,7 @@ spec:
           {{- end }}
           echo "* copy ioc config and replace any .j2 with rendered values"
           find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
-          ##dump on stdout
-          find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml"' _ {} \;
-
+        
           {{- if .Values.start }}
           {{ .Values.start }}
           {{- end }}

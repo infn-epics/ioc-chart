@@ -15,7 +15,9 @@ data:
     {{ .name | lower }}_dir: {{ .mountPath }}/{{ $.Values.iocname }}
     {{- end }}
     {{- else }}
-    config_dir: "/tmp"
+    config_dir: {{ .Values.iocConfig }}
+    data_dir: {{.Values.dataVolume.hostPath}}
+    autosave_dir: "/autosave"
     {{- end }}
     ioctop: {{.Values.iocConfig}}
 {{ toYaml .Values | indent 4 }}
