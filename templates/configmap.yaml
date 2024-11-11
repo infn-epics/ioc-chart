@@ -22,8 +22,5 @@ data:
     ioctop: {{.Values.iocConfig}}
     {{- range .Values.iocparam }}
     {{.name}}: {{.value}}
-    {- end}
-
+    {{- end}}
 {{ toYaml .Values | indent 4 }}
-
-    
