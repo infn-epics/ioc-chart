@@ -102,10 +102,10 @@ spec:
           
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
-              find temp-config/ -type f -exec /pvc/k8sreplace.sh {} \;
+              find temp-config/ -type f ! -name "*.j2" -exec /pvc/k8sreplace.sh {} \;
               mv temp-config/* /pvc/
             else
-              find temp-config/{{ .Values.gitRepoConfig.path }} -type f -exec /pvc/k8sreplace.sh {} \;
+              find temp-config/{{ .Values.gitRepoConfig.path }} -type f ! -name "*.j2" -exec /pvc/k8sreplace.sh {} \;
               mv temp-config/{{ .Values.gitRepoConfig.path }}/* /pvc/
               rm -rf temp-config
             fi
