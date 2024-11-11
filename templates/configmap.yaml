@@ -1,8 +1,7 @@
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name:  {{ include "ioc-chart.release" . }}
+  name: {{ include "ioc-chart.release" . }}
   labels:
     app: {{ include "ioc-chart.release" . }}
     beamline: {{ .Values.beamline }}
@@ -10,6 +9,12 @@ metadata:
     is_ioc: "True"
 data:
   config.yaml: |
+    {{- if .Values.nfsMounts }}
+    {{- range .Values.nfsMounts }}
+    {{ .name | lower }}_dir: {{ .mountPath }}/{{ $.Values.iocname }}
+    {{- end }}
+    {{- else }}
+    config_dir: "/tmp"
+    {{- end }}
+    ioctop: {{.Values.iocConfig}}
     {{ toYaml .Values | indent 4 }}
-
-  
