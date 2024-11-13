@@ -34,6 +34,7 @@ spec:
       {{- end }}
       {{- if .Values.gitRepoConfig.url }}
       initContainers:
+      
       - name: init-container-git
         image: baltig.infn.it:4567/epics-containers/container-init
         resources:
@@ -78,9 +79,6 @@ spec:
           # {{- range .Values.iocparam }}
           # echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
           # {{- end }}
-
-          
-
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
           echo "* applying substitutions "`cat /pvc/k8sreplace.sh`
 
@@ -162,8 +160,7 @@ spec:
       {{- end }}
       {{- if .Values.gitRepoConfig.url }}
       - name: config-volume
-        persistentVolumeClaim:
-          claimName: {{ include "ioc-chart.release" . }}-gitconfig
+          emptyDir: {}
       {{- end }}
       - name: config-dump
         configMap:
@@ -365,12 +362,12 @@ spec:
           requests:
             storage: 1Gi
     {{- end }}
-    {{- if .Values.gitRepoConfig.url }}
-    - metadata:
-        name: config-volume
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
-    {{- end }}
+    # {{- if .Values.gitRepoConfig.url }}
+    # - metadata:
+    #     name: config-volume
+    #   spec:
+    #     accessModes: ["ReadWriteOnce"]
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+    # {{- end }}
