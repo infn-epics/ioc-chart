@@ -160,7 +160,7 @@ spec:
       {{- end }}
       {{- if .Values.gitRepoConfig.url }}
       - name: config-volume
-          emptyDir: {}
+        emptyDir: {}
       {{- end }}
       - name: config-dump
         configMap:
