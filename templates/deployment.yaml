@@ -91,16 +91,16 @@ spec:
           if [ -n "{{ .Values.gitRepoConfig.token }}" ]; then
             echo "Cloning repository using Personal Access Token"
             if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
-              git clone -b {{ .Values.gitRepoConfig.branch }} https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
+              git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
             else
-              git clone https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
+              git clone --depth 1 https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
             fi
           else
             echo "Cloning repository unauthenticated"
             if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
-              git clone -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
+              git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
             else
-              git clone {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
+              git clone --depth 1 {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
             fi
           fi
           
@@ -131,7 +131,7 @@ spec:
           mountPath: /etc/config-dump
           
       {{- end }}
-      terminationGracePeriodSeconds: 15 # nice to have quick restarts on IOCs
+      terminationGracePeriodSeconds: 5 # nice to have quick restarts on IOCs
       volumes:
       {{- if .Values.runtimeClaim }}
       - name: runtime-volume
