@@ -203,7 +203,7 @@ spec:
           {{- range .Values.nfsMounts }}
             mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
-              cp -r {{ .Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
+            cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
             {{- end }}
           {{- end }}
           {{- if .Values.start }}
