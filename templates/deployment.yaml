@@ -186,9 +186,7 @@ spec:
           echo "Starting caRepeater"
           caRepeater &
           {{- end }}
-          {{- range .Values.nfsMounts }}
-          mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
-          {{- end }}
+          
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
           echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
           socat pty,link={{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }} &
@@ -202,7 +200,12 @@ spec:
           {{- end }}
           echo "* copy ioc config and replace any .j2 with rendered values"
           find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}.yaml"' _ {} \;
-        
+          {{- range .Values.nfsMounts }}
+            mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
+            {{- if eq .name "config" }}
+              cp -r {{ .Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
+            {{- end }}
+          {{- end }}
           {{- if .Values.start }}
           {{ .Values.start }}
           {{- end }}
