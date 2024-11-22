@@ -198,6 +198,7 @@ spec:
             exit 1
           fi
           {{- end }}
+          pip install jnjrender -U
           echo "=== configuration yaml ======="
           cat /etc/config-dump/config.yaml 
           echo "=============================="
@@ -209,6 +210,7 @@ spec:
             cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
             {{- end }}
           {{- end }}
+          ls -latr
           {{- if .Values.start }}
           {{ .Values.start }}
           {{- end }}
