@@ -213,6 +213,7 @@ spec:
           cd {{ .Values.iocConfig }}
           ls -latr
           {{- if .Values.start }}
+          chmod +x {{ .Values.start }}
           {{ .Values.start }}
           {{- end }}
         ports:
