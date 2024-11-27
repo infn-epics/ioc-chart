@@ -210,6 +210,7 @@ spec:
             cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
             {{- end }}
           {{- end }}
+          cd {{ .Values.iocConfig }}
           ls -latr
           {{- if .Values.start }}
           {{ .Values.start }}
