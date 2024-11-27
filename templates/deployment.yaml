@@ -213,6 +213,7 @@ spec:
           cd {{ .Values.iocConfig }}
           ls -latr
           {{- if .Values.start }}
+          export PATH="$PATH:$PWD"
           chmod +x {{ .Values.start }}
           {{ .Values.start }}
           {{- end }}
