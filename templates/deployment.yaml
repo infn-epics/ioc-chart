@@ -32,7 +32,7 @@ spec:
       {{- if .Values.hostNetwork }}
       hostNetwork: {{ .Values.hostNetwork }}
       {{- end }}
-      {{- if .Values.gitRepoConfig.url }}
+    {{- if and .Values.gitRepoConfig.url (or (not (hasKey .Values "template")) (empty .Values.template)) }}
       initContainers:
       
       - name: init-container-git
@@ -49,38 +49,9 @@ spec:
           cd /pvc
           rm -rf *
           prefix=""
-          # echo "#!/bin/sh" > k8sreplace.sh
-          # chmod +x k8sreplace.sh
-          # echo 'sed -i "s|__IOC_TOP__|{{ .Values.iocConfig }}|g" $1' >> k8sreplace.sh
           
-          # {{- if .Values.iocprefix }}
-          # echo 'sed -i "s|__IOC_PREFIX__|{{ .Values.iocprefix }}|g" $1' >> k8sreplace.sh
-          # prefix="{{ .Values.iocprefix }}"
-          # {{- end }}
-
-          # {{- if .Values.iocroot }}
-          # prefix="$prefix:{{ .Values.iocroot }}"
-
-          # echo 'sed -i "s|__IOC_ROOT__|{{ .Values.iocroot }}|g" $1' >> k8sreplace.sh
-          # {{- end }}
-
-          # {{- if .Values.iocname }}
-          # echo 'sed -i "s|__IOC_NAME__|{{ .Values.iocname }}|g" $1' >> k8sreplace.sh
-          # {{- end }}
-
-          # {{- if .Values.nfsMounts }}
-          #   {{- range .Values.nfsMounts }}
-          #   echo 'sed -i "s|__{{ .name | upper }}_DIR__|{{ .mountPath }}/{{ $.Values.iocname }}|g" $1' >> k8sreplace.sh
-          #   {{- end }}
-          # {{- else }}
-          #     echo 'sed -i "s|__CONFIG_DIR__|/tmp|g" $1' >> k8sreplace.sh
-          # {{- end }}
-
-          # {{- range .Values.iocparam }}
-          # echo 'sed -i "s|{{ .name }}|{{ .value }}|g" $1' >> k8sreplace.sh
-          # {{- end }}
+          
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
-          # echo "* applying substitutions "`cat /pvc/k8sreplace.sh`
 
           if [ -d temp-config ]; then
             rm -rf temp-config
@@ -114,12 +85,11 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
+          
           echo "## Intialization $prefix `date`" > init.cmd
           {{- range .Values.iocinit }}
           echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" >> init.cmd
           {{- end }}
-          
-          # chmod a+w,a+r -R /pvc
           ls /pvc
         imagePullPolicy: IfNotPresent
         volumeMounts:
@@ -202,8 +172,15 @@ spec:
           echo "=== configuration yaml ======="
           cat /etc/config-dump/config.yaml 
           echo "=============================="
+          {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
+          echo "* using template {{ .Values.template }}"
+          jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
+          {{- else}}
+
           echo "* copy ioc config and replace any .j2 with rendered values"
           find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}"' _ {} \;
+          {{- end}}
+
           {{- range .Values.nfsMounts }}
             mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
