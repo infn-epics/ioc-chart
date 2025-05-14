@@ -10,7 +10,7 @@ metadata:
     {{- if eq .Values.ingress.className "haproxy"}}
     haproxy.org/path-rewrite: /web/(.*) /\1
     {{- else }}
-    nginx.ingress.kubernetes.io/rewrite-target: /web/(.*) /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /web/(.*) $1
     {{- end}}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
