@@ -136,8 +136,8 @@ ingress:
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8081
   http:
     enable: false
-    port: 8081
+    port: 80
   loglevel: "INFO"
