@@ -182,34 +182,39 @@ spec:
           {{- range .Values.nfsMounts }}
             # mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
-            cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
-            echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- if hasKey $.Values "iocname" }}
-            echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
-            {{- if hasKey $.Values "asset" }}
-            echo "IOC Asset: {{ $.Values.asset }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
-            {{- if hasKey $.Values "template" }}
-            echo "IOC Template: {{ $.Values.template }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
+              cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
+              echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              
+              {{- if hasKey $.Values "iocname" }}
+              echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
 
-            {{- if hasKey $.Values "devtype" }}
-            echo "IOC Device Type: {{ $.Values.devtype }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
+              {{- if hasKey $.Values "asset" }}
+              echo "IOC Asset: {{ $.Values.asset }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
+              
+              {{- if hasKey $.Values "template" }}
+              echo "IOC Template: {{ $.Values.template }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
 
-            {{- if hasKey $.Values "devgroup" }}
-            echo "IOC Device Group: {{ $.Values.devgroup }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
+              {{- if hasKey $.Values "devtype" }}
+              echo "IOC Device Type: {{ $.Values.devtype }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
 
-            {{- if hasKey $.Values "iocprefix" }}
-            echo "IOC Prefix: {{ $.Values.iocprefix }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-            {{- end }}
+              {{- if hasKey $.Values "devgroup" }}
+              echo "IOC Device Group: {{ $.Values.devgroup }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
 
-            {{- if hasKey $.Values "ioc_version" }}
-            echo "IOC Version: {{ $.Values.ioc_version }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- if hasKey $.Values "iocprefix" }}
+              echo "IOC Prefix: {{ $.Values.iocprefix }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
+
+              {{- if hasKey $.Values "ioc_version" }}
+              echo "IOC Version: {{ $.Values.ioc_version }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+              {{- end }}
             {{- end }}
           {{- end }}
+          
           cd {{ .Values.iocConfig }}
           ls -latr
           {{- if .Values.start }}
