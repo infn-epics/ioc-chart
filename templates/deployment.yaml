@@ -50,9 +50,7 @@ spec:
           cd /pvc
           rm -rf *
           prefix=""
-          
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
-
           if [ -d temp-config ]; then
             rm -rf temp-config
           fi
@@ -150,11 +148,13 @@ spec:
         - sh
         - -c
         - |
+          set -e  # Exit immediately if a command fails
+
           {{- if .Values.carepeater }}
           echo "Starting caRepeater"
           caRepeater &
           {{- end }}
-          
+      
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
           echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
           socat pty,link={{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }} &
@@ -180,7 +180,7 @@ spec:
           {{- end}}
 
           {{- range .Values.nfsMounts }}
-            mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
+            # mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
             cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
             {{- end }}
@@ -189,7 +189,6 @@ spec:
           ls -latr
           {{- if .Values.start }}
           export PATH="$PATH:$PWD"
-          chmod +x {{ .Values.start }}
           {{ .Values.start }}
           {{- end }}
         ports:
