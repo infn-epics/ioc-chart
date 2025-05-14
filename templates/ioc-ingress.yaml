@@ -35,7 +35,7 @@ spec:
           {{- end }}
           {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
           - path:  /web(/|$)(.*)
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $fullName }}
