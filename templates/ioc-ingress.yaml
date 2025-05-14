@@ -8,9 +8,9 @@ metadata:
     {{- include "ioc-chart.labels" . | nindent 4 }}
   annotations:
     {{- if eq .Values.ingress.className "haproxy"}}
-    haproxy.org/path-rewrite: /\2
+    haproxy.org/path-rewrite: /\1
     {{- else }}
-    nginx.ingress.kubernetes.io/rewrite-target: /\2
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     {{- end}}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
@@ -34,7 +34,7 @@ spec:
                   number: {{ $.Values.service.port }}
           {{- end }}
           {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
-          - path: /web(/|$)(.*)
+          - path: /web/(.*)
             pathType: Prefix
             backend:
               service:
