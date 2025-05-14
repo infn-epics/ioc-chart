@@ -18,7 +18,7 @@ spec:
         paths:
           {{- if hasKey $.Values.service "port" }}
           - path: /api
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
@@ -27,7 +27,7 @@ spec:
           {{- end }}
           {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
           - path: /web
-            pathType: ImplementationSpecific
+            pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
