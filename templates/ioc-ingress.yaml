@@ -10,8 +10,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     haproxy.org/path-rewrite: /$2
-
-
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
