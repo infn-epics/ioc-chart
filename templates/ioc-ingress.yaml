@@ -6,10 +6,10 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "ioc-chart.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     haproxy.org/path-rewrite: /$2
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
