@@ -8,7 +8,7 @@ metadata:
     {{- include "ioc-chart.labels" . | nindent 4 }}
   annotations:
     {{- if eq .Values.ingress.className "haproxy"}}
-    haproxy.org/path-rewrite: /web/(.*) /\1
+    haproxy-ingress.github.io/rewrite-target: /
     {{- else }}
     nginx.ingress.kubernetes.io/rewrite-target: /web/(.*) $1
     {{- end}}
