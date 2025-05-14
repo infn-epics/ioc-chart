@@ -149,7 +149,7 @@ spec:
         - -c
         - |
           set -e  # Exit immediately if a command fails
-
+          data=`date`
           {{- if .Values.carepeater }}
           echo "Starting caRepeater"
           caRepeater &
@@ -183,6 +183,16 @@ spec:
             # mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
             cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
+            echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Asset: {{ .Values.asset }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Template: {{ .Values.template }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Device Type: {{ .Values.devtype }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Device Group: {{ .Values.devgroup }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Prefix: {{ $.Values.iocprefix }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Version: {{ $.Values.ioc_version }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "IOC Config: {{ .Values.iocConfig }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            
             {{- end }}
           {{- end }}
           cd {{ .Values.iocConfig }}
