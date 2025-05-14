@@ -44,13 +44,13 @@ spec:
 
   {{- if hasKey .Values.service "port" }}
   - port: {{ .Values.service.port }}
-    targetPort: rest
+    targetPort: {{.Values.service.port}}
     protocol: TCP
     name: rest
   {{- end }}
   {{- if .Values.service.http.enable }}
-  - port: {{ .Values.service.http.port }}
-    targetPort: http
+  - port: 80
+    targetPort: {{.Values.service.http.port}}
     protocol: TCP
     name: http
   {{- end }}
