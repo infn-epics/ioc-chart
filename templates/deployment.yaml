@@ -45,11 +45,11 @@ spec:
         - sh
         - -c
         - |
+          set -e  # Exit immediately if a command fails
           id=`id`
           cd /pvc
           rm -rf *
           prefix=""
-          
           
           echo "ID $id cloning: {{ .Values.gitRepoConfig.url }} {{ .Values.gitRepoConfig.path }} revision {{ .Values.gitRepoConfig.branch }} "
 
@@ -75,10 +75,8 @@ spec:
           
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
-            #  find temp-config/ -type f ! -name "*.j2" -exec /pvc/k8sreplace.sh {} \;
               mv temp-config/* /pvc/
             else
-            #  find temp-config/{{ .Values.gitRepoConfig.path }} -type f ! -name "*.j2" -exec /pvc/k8sreplace.sh {} \;
               mv temp-config/{{ .Values.gitRepoConfig.path }}/* /pvc/
               rm -rf temp-config
             fi
@@ -86,7 +84,7 @@ spec:
             mv temp-config/* /pvc/
           fi
           
-          echo "## Intialization $prefix `date`" > init.cmd
+          echo "## Initialization $prefix `date`" > init.cmd
           {{- range .Values.iocinit }}
           echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" >> init.cmd
           {{- end }}
