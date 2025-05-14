@@ -16,23 +16,23 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- if hasKey .Values.service "port" }}
+          {{- if hasKey $.Values.service "port" }}
           - path: /api
             pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.service.port }}
+                  number: {{ $.Values.service.port }}
           {{- end }}
-          {{- if and .Values.service.http.enable (hasKey .Values.service.http "port") }}
+          {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
           - path: /web
             pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.service.http.port }}
+                  number: {{ $.Values.service.http.port }}
           {{- end }}
     {{- end }}
 {{- end }}
