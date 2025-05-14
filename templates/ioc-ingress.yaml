@@ -29,7 +29,7 @@ spec:
                   number: {{ $.Values.service.port }}
           {{- end }}
           {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
-          - path: /web
+          - path: /web(/|$)(.*)
             pathType: Prefix
             backend:
               service:
