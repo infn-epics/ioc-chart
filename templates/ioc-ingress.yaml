@@ -32,7 +32,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $.Values.service.http.port }}
+                  number: 80
           {{- end }}
     {{- end }}
 {{- end }}
