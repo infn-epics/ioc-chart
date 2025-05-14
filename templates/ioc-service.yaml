@@ -42,3 +42,16 @@ spec:
     targetPort: {{ add1 (.Values.pva_server_port | default 5075) }}
     protocol: UDP
 
+  {{- if hasKey .Values.service "port" }}
+  - port: {{ .Values.service.port }}
+    targetPort: rest
+    protocol: TCP
+    name: rest
+  {{- end }}
+  {{- if .Values.service.http.enable }}
+  - port: {{ .Values.service.http.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- end }}
+

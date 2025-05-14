@@ -139,7 +139,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ include "ioc-chart.release" . }}
-        image: {{ .Values.image }}
+        image: "{{ .Values.image }}:{{.Values.ioc_version}}"
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         securityContext:
@@ -150,73 +150,7 @@ spec:
         - |
           set -e  # Exit immediately if a command fails
           data=`date`
-          {{- if .Values.carepeater }}
-          echo "Starting caRepeater"
-          caRepeater &
-          {{- end }}
-      
-          {{- if and (.Values.serial.ip) (.Values.serial.port) }}
-          echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
-          socat pty,link={{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }} &
-          sleep 1
-          if [ -e {{ .Values.serial.ptty }} ]; then
-            echo "tty {{ .Values.serial.ptty }}"
-          else
-            echo "## failed tty {{ .Values.serial.ptty }} "
-            exit 1
-          fi
-          {{- end }}
-
-          echo "=== configuration yaml ======="
-          cat /etc/config-dump/config.yaml 
-          echo "=============================="
-          {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
-          echo "* using template {{ .Values.template }}"
-          jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
-          {{- else}}
-
-          echo "* copy ioc config and replace any .j2 with rendered values"
-          find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}"' _ {} \;
-          {{- end}}
-
-          {{- range .Values.nfsMounts }}
-            # mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
-            {{- if eq .name "config" }}
-              cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
-              echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              
-              {{- if hasKey $.Values "iocname" }}
-              echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-
-              {{- if hasKey $.Values "asset" }}
-              echo "IOC Asset: {{ $.Values.asset }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-              
-              {{- if hasKey $.Values "template" }}
-              echo "IOC Template: {{ $.Values.template }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-
-              {{- if hasKey $.Values "devtype" }}
-              echo "IOC Device Type: {{ $.Values.devtype }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-
-              {{- if hasKey $.Values "devgroup" }}
-              echo "IOC Device Group: {{ $.Values.devgroup }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-
-              {{- if hasKey $.Values "iocprefix" }}
-              echo "IOC Prefix: {{ $.Values.iocprefix }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-
-              {{- if hasKey $.Values "ioc_version" }}
-              echo "IOC Version: {{ $.Values.ioc_version }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              {{- end }}
-            {{- end }}
-          {{- end }}
-          
-          cd {{ .Values.iocConfig }}
-          ls -latr
+          echo "Starting IOC container"
           {{- if .Values.start }}
           export PATH="$PATH:$PWD"
           {{ .Values.start }}
@@ -227,6 +161,17 @@ spec:
         - containerPort: {{ add1 (.Values.ca_server_port | default 5064) }}
         - containerPort: {{ .Values.pva_server_port | default 5075 }}
         - containerPort: {{ add1 (.Values.pva_broadcast_port | default 5075) }}
+        
+        {{- if hasKey .Values.service "port" }}
+        - containerPort: {{ .Values.service.port }}
+          name: rest
+        {{- end }}
+
+        {{- if .Values.service.http.enable }}
+        - containerPort: {{ .Values.service.http.port }}
+          name: http
+        {{- end }}
+        
         {{- if .Values.liveness }}
         livenessProbe:
           exec:
