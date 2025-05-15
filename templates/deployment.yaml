@@ -124,10 +124,8 @@ spec:
         persistentVolumeClaim:
           claimName: {{ include "ioc-chart.release" . }}-data
       {{- end }}
-      {{- if .Values.gitRepoConfig.url }}
       - name: config-volume
         emptyDir: {}
-      {{- end }}
       - name: config-dump
         configMap:
           name: {{ include "ioc-chart.release" . }}
