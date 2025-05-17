@@ -186,6 +186,7 @@ spec:
           {{- end}}
 
           {{- range .Values.nfsMounts }}
+            
             mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
               cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
@@ -382,16 +383,7 @@ spec:
           requests:
             storage: 1Gi
     {{- end }}
-    {{- if not .Values.autosaveClaim }}
-
-    - metadata:
-        name: autosave-volume
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
-    {{- end }}
+    
     {{- if .Values.dataVolume.pvc }}
     - metadata:
         name: data-volume
