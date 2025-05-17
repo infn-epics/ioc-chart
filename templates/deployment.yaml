@@ -122,10 +122,10 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.nfsv2TftpClaim }}
       {{- end }}
-      {{- if .Values.autosave }}
+      {{- if .Values.autosaveClaim }}
       - name: autosave-volume
         persistentVolumeClaim:
-          claimName: {{ .Values.autosave }}
+          claimName: {{ .Values.autosaveClaim }}
       {{- end }}
       {{- if .Values.dataVolume.pvc }}
       - name: data-volume
@@ -267,7 +267,7 @@ spec:
           mountPath: /.ssh
           readOnly: true
         {{- end}}
-        {{- if .Values.autosave }}
+        {{- if .Values.autosaveClaim }}
         - name: autosave-volume
           mountPath: /autosave
         {{- end }}
@@ -382,6 +382,8 @@ spec:
           requests:
             storage: 1Gi
     {{- end }}
+    {{- if not .Values.autosaveClaim }}
+
     - metadata:
         name: autosave-volume
       spec:
@@ -389,6 +391,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
+    {{- end }}
     {{- if .Values.dataVolume.pvc }}
     - metadata:
         name: data-volume
