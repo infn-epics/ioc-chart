@@ -98,7 +98,7 @@ spec:
       terminationGracePeriodSeconds: 5 # nice to have quick restarts on IOCs
       volumes:
       {{- if .Values.ssh_key_secret }}
-      - name: ssh_key_volume
+      - name: ssh-key-volume
         secret:
           secretName: "{{.Values.ssh_key_secret}}"
           items:
@@ -263,7 +263,7 @@ spec:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
         {{- if .Values.ssh_key_secret }}
-        - name: ssh_key_volume
+        - name: ssh-key-volume
           mountPath: /.ssh
           readOnly: true
         {{- end}}
