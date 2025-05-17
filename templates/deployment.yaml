@@ -100,12 +100,12 @@ spec:
       {{- if .Values.ssh_key_secret }}
       - name: ssh_key_volume
         secret:
-          secretName: {{.Values.ssh_key_secret}}
+          secretName: "{{.Values.ssh_key_secret}}"
           items:
-          - key: id_rsa
-            path: id_rsa
-          - key: id_rsa.pub
-            path: id_rsa.pub
+          - key: "id_rsa"
+            path: "id_rsa"
+          - key: "id_rsa.pub"
+            path: "id_rsa.pub"
       {{- end }}
       {{- if .Values.runtimeClaim }}
       - name: runtime-volume
@@ -262,8 +262,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
-        {{- if .Values.ssh_key_secret -}}
-
+        {{- if .Values.ssh_key_secret }}
         - name: ssh_key_volume
           mountPath: /.ssh
           readOnly: true
