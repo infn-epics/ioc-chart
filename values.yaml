@@ -140,3 +140,5 @@ service:
     enable: false
     port: 8082 ## default stream port for cameras
   loglevel: "INFO"
+
+ssh-key-secret:

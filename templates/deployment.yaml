@@ -97,6 +97,16 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: 5 # nice to have quick restarts on IOCs
       volumes:
+      {{- if .Values.ssh-key-secret -}}
+      - name: ssh-key-volume
+        secret:
+          secretName: {{.Values.ssh-key-secret}}
+          items:
+          - key: id_rsa
+            path: id_rsa
+          - key: id_rsa.pub
+            path: id_rsa.pub
+      {{- end }}
       {{- if .Values.runtimeClaim }}
       - name: runtime-volume
         persistentVolumeClaim:
@@ -112,13 +122,11 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.nfsv2TftpClaim }}
       {{- end }}
+      {{- if .Values.autosave }}
       - name: autosave-volume
         persistentVolumeClaim:
-          {{- if .Values.autosave }}
           claimName: {{ .Values.autosave }}
-          {{- else }}
-          claimName: {{ include "ioc-chart.release" . }}-autosave
-          {{- end }}
+      {{- end }}
       {{- if .Values.dataVolume.pvc }}
       - name: data-volume
         persistentVolumeClaim:
@@ -253,6 +261,12 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
+        {{- if .Values.ssh-key-secret -}}
+
+        - name: ssh-key-volume
+          mountPath: /.ssh
+          readOnly: true
+        {{- end}}
         {{- if .Values.autosave }}
         - name: autosave-volume
           mountPath: /autosave
