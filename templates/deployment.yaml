@@ -182,7 +182,7 @@ spec:
           ## running on remote host
           {{- else}}
             echo "* using ibek template {{ .Values.template }}"
-            jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
+            jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
           {{- end }}
           {{- else}}
 
