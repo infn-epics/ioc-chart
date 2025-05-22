@@ -5,9 +5,10 @@ metadata:
 spec:
   selector:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
-  {{- if .Values.staticIP }}
-  clusterIP: {{.Values.staticIP}}
-  {{- end }}
+  # {{- if .Values.staticIP }}
+  # clusterIP: {{.Values.staticIP}}
+  # {{- end }}
+  clusterIP: None
   ports:
   - name: ca-server-tcp
     port: {{ .Values.ca_server_port | default 5064 }}

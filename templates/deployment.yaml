@@ -54,22 +54,19 @@ spec:
           if [ -d temp-config ]; then
             rm -rf temp-config
           fi
-          # Cloning logic with PAT
-          if [ -n "{{ .Values.gitRepoConfig.token }}" ]; then
-            echo "Cloning repository using Personal Access Token"
-            if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
-              git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
-            else
-              git clone --depth 1 https://oauth2:{{ .Values.gitRepoConfig.token }}@{{ .Values.gitRepoConfig.url | replace "https://" "" }} --recurse-submodules temp-config
-            fi
-          else
+          {{- if .Values.epik8s_secrets }}
+              # Cloning logic with PAT
+              git config --global credential.helper "store --file=/.ssh/git_token"
+          {{- else }}
             echo "Cloning repository unauthenticated"
-            if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
-              git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
-            else
-              git clone --depth 1 {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
-            fi
+          {{- end }}
+         
+          if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
+            git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
+          else
+            git clone --depth 1 {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           fi
+        
           
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
@@ -82,10 +79,6 @@ spec:
             mv temp-config/* /pvc/
           fi
           
-          echo "## Initialization $prefix `date`" > init.cmd
-          {{- range .Values.iocinit }}
-          echo "dbpf(\"$prefix:{{.name}}\",\"{{.value}}\")" >> init.cmd
-          {{- end }}
           ls /pvc
         imagePullPolicy: IfNotPresent
         volumeMounts:
@@ -93,19 +86,26 @@ spec:
           mountPath: /pvc
         - name: config-dump
           mountPath: /etc/config-dump
+        {{- if .Values.epik8s_secrets }}
+        - name: secrets-volume
+          mountPath: /.ssh
+          readOnly: true
+        {{- end}}
           
       {{- end }}
       terminationGracePeriodSeconds: 5 # nice to have quick restarts on IOCs
       volumes:
-      {{- if .Values.ssh_key_secret }}
-      - name: ssh-key-volume
+      {{- if .Values.epik8s_secrets }}
+      - name: secrets-volume
         secret:
-          secretName: "{{.Values.ssh_key_secret}}"
+          secretName: "{{.Values.epik8s_secrets}}"
           items:
           - key: "id_rsa"
             path: "id_rsa"
           - key: "id_rsa.pub"
             path: "id_rsa.pub"
+          - key: "git_token"
+            path: "git_token"
       {{- end }}
       {{- if .Values.runtimeClaim }}
       - name: runtime-volume
@@ -176,9 +176,14 @@ spec:
           echo "=== configuration yaml ======="
           cat /etc/config-dump/config.yaml 
           echo "=============================="
+        
           {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
-          echo "* using template {{ .Values.template }}"
-          jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
+          {{- if and (hasKey .Values "host") (not (empty .Values.host)) }}
+          ## running on remote host
+          {{- else}}
+            echo "* using ibek template {{ .Values.template }}"
+            jnjrender  /epics/support/ibek-templates/ /etc/config-dump/config.yaml --output {{ .Values.iocConfig }}/{{ $.Values.iocname }}.yaml
+          {{- end }}
           {{- else}}
 
           echo "* copy ioc config and replace any .j2 with rendered values"
@@ -262,8 +267,8 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: {{ .Values.iocConfig }}
-        {{- if .Values.ssh_key_secret }}
-        - name: ssh-key-volume
+        {{- if .Values.epik8s_secrets }}
+        - name: secrets-volume
           mountPath: /.ssh
           readOnly: true
         {{- end}}
