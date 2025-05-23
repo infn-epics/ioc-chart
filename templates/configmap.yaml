@@ -19,7 +19,12 @@ data:
     data_dir: {{.Values.dataVolume.hostPath}}
     autosave_dir: "/autosave"
     {{- end }}
+    {{- if .Values.workdir }}
+    ioctop: {{.Values.workdir}}
+    {{- else }}
     ioctop: {{.Values.iocConfig}}
+    {{- end }}
+    {{- if .Values.epicsConfiguration.iocparam }}
     {{- range .Values.iocparam }}
     {{.name}}: {{.value}}
     {{- end}}
