@@ -9,7 +9,6 @@ metadata:
     is_ioc: "True"
 data:
   config.yaml: |
-  
     {{- if .Values.nfsMounts }}
     {{- range .Values.nfsMounts }}
     {{ .name | lower }}_dir: {{ .mountPath }}/{{ $.Values.iocname }}
@@ -25,7 +24,8 @@ data:
     ioctop: {{.Values.iocConfig}}
     {{- end }}
     {{- if .Values.epicsConfiguration.iocparam }}
-    {{- range .Values.iocparam }}
-    {{.name}}: {{.value}}
-    {{- end}}
+    {{- range .Values.epicsConfiguration.iocparam }}
+    {{ .name }}: {{ .value }}
+    {{- end }}
+    {{- end }}
 {{ toYaml .Values | indent 4 }}
