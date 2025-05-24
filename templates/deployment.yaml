@@ -160,7 +160,7 @@ spec:
           echo "Starting caRepeater"
           caRepeater &
           {{- end }}
-      
+
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
           echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
           socat pty,link={{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }} &
@@ -180,7 +180,8 @@ spec:
           {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
           {{- if and (hasKey .Values "host") (not (empty .Values.host)) }}
           ## running on remote host
-          epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}/
+          pip install --upgrade epik8s-tools
+          epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
             echo "* using ibek template {{ .Values.template }}"
