@@ -180,7 +180,7 @@ spec:
           {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
           {{- if and (hasKey .Values "host") (not (empty .Values.host)) }}
           ## running on remote host
-          pip install --upgrade epik8s-tools --prefix /epics/support
+          pip install epik8s-tools --prefix /epics/support
           export PYTHONPATH=/epics/support:$PYTHONPATH
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
