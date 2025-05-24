@@ -181,6 +181,7 @@ spec:
           {{- if and (hasKey .Values "host") (not (empty .Values.host)) }}
           ## running on remote host
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}/
+          exit $?
           {{- else}}
             echo "* using ibek template {{ .Values.template }}"
             jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}/{{ .Values.iocname }}.yaml
