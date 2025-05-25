@@ -28,4 +28,7 @@ data:
     {{ .name }}: {{ .value }}
     {{- end }}
     {{- end }}
+    {{- range .Values.iocparam }}
+    {{.name}}: {{.value}}
+    {{- end}}
 {{ toYaml .Values | indent 4 }}

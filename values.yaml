@@ -142,3 +142,5 @@ service:
   loglevel: "INFO"
 
 epik8s_secrets: ""
+
+python_env: true
