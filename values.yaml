@@ -51,7 +51,7 @@ serviceAccountName: "default"
 # these values are the only mandatory overrides. We supply image in the values.yaml
 # for each IOC instance. `ec ioc deploy` supplies ioc_name and ioc_version
 # on the command line to helm.
-image: ghcr.io/infn-epics/infn-epics-ioc-linux-runtime
+image: ghcr.io/infn-epics/infn-epics-ioc-runtime
 imagePullPolicy: Always
 ioc_version: latest
 iocname:
