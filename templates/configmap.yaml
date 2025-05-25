@@ -23,11 +23,6 @@ data:
     {{- else }}
     ioctop: {{.Values.iocConfig}}
     {{- end }}
-    {{- if .Values.epicsConfiguration.iocparam }}
-    {{- range .Values.epicsConfiguration.iocparam }}
-    {{ .name }}: {{ .value }}
-    {{- end }}
-    {{- end }}
     {{- range .Values.iocparam }}
     {{.name}}: {{.value}}
     {{- end}}
