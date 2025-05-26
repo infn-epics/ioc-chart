@@ -189,7 +189,12 @@ spec:
           exit $?
           {{- else}}
             echo "* using ibek template {{ .Values.template }}"
+            {{- if .Values.iocname }}
             jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}/{{ .Values.iocname }}.yaml
+            {{- else }}
+            jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}
+            {{- end }}
+
           {{- end }}
           {{- else}}
 
@@ -198,40 +203,33 @@ spec:
           {{- end}}
 
           {{- range .Values.nfsMounts }}
-            
             mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
             {{- if eq .name "config" }}
-              cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
-              echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              if [ -e /BUILD_INFO.txt ]; then
-                cat /BUILD_INFO.txt >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              else
-                echo "No BUILD_INFO.txt found" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-              fi
+            cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
+            echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            if [ -e /BUILD_INFO.txt ]; then
+              cat /BUILD_INFO.txt >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            else
+              echo "No BUILD_INFO.txt found" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            fi
               {{- if hasKey $.Values "iocname" }}
               echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-
               {{- if hasKey $.Values "asset" }}
               echo "IOC Asset: {{ $.Values.asset }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-              
               {{- if hasKey $.Values "template" }}
               echo "IOC Template: {{ $.Values.template }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-
               {{- if hasKey $.Values "devtype" }}
               echo "IOC Device Type: {{ $.Values.devtype }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-
               {{- if hasKey $.Values "devgroup" }}
               echo "IOC Device Group: {{ $.Values.devgroup }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-
               {{- if hasKey $.Values "iocprefix" }}
               echo "IOC Prefix: {{ $.Values.iocprefix }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
-
               {{- if hasKey $.Values "ioc_version" }}
               echo "IOC Version: {{ $.Values.ioc_version }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
               {{- end }}
