@@ -185,7 +185,7 @@ spec:
           . /epics/support/venv/bin/activate
           pip install epik8s-tools
           {{- end }}
-          cp -r /.ssh ~/
+          cp -rf /.ssh ~/
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
