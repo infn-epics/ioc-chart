@@ -186,7 +186,6 @@ spec:
           . /epics/support/venv/bin/activate
           pip install epik8s-tools
           {{- end }}
-          cp -af /.ssh ~/
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
@@ -285,7 +284,7 @@ spec:
           mountPath: {{ .Values.iocConfig }}
         {{- if .Values.epik8s_secrets }}
         - name: secrets-volume
-          mountPath: /.ssh
+          mountPath: /home/epics/.ssh
         {{- end}}
         {{- if .Values.autosaveClaim }}
         - name: autosave-volume
