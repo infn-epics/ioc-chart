@@ -97,6 +97,7 @@ spec:
       volumes:
       {{- if .Values.epik8s_secrets }}
       - name: secrets-volume
+        defaultMode: 0600        
         secret:
           secretName: "{{.Values.epik8s_secrets}}"
           items:
@@ -185,7 +186,7 @@ spec:
           . /epics/support/venv/bin/activate
           pip install epik8s-tools
           {{- end }}
-          cp -rf /.ssh ~/
+          cp -af /.ssh ~/
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
