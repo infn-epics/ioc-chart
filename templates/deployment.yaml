@@ -97,7 +97,7 @@ spec:
       volumes:
       {{- if .Values.epik8s_secrets }}
       - name: secrets-volume
-        defaultMode: 0600        
+        defaultMode: {{ 0600 | int }}      
         secret:
           secretName: "{{.Values.epik8s_secrets}}"
           items:
