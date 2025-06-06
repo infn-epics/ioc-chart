@@ -286,7 +286,6 @@ spec:
         {{- if .Values.epik8s_secrets }}
         - name: secrets-volume
           mountPath: /.ssh
-          readOnly: true
         {{- end}}
         {{- if .Values.autosaveClaim }}
         - name: autosave-volume
