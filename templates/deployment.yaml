@@ -186,7 +186,9 @@ spec:
           . /epics/support/venv/bin/activate
           pip install epik8s-tools
           {{- end }}
-          cp -a /.ssh ~/
+          mkdir ~/.ssh
+          cp /.ssh/id_rsa* ~/.ssh/
+          chmod 400 -R ~/.ssh/id_rsa
           epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
