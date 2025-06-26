@@ -193,12 +193,7 @@ spec:
           exit $?
           {{- else}}
           echo "* using ibek template {{ .Values.template }}"
-          {{- if .Values.iocname }}
-          jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}/{{ .Values.iocname }}.yaml
-          {{- else }}
           jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}
-          {{- end }}
-
           {{- end }}
           {{- else}}
 
