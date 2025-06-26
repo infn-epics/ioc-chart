@@ -202,7 +202,7 @@ spec:
           {{- end}}
 
           {{- range .Values.nfsMounts }}
-          mkdir -p {{ .mountPath }}/{{ $.Values.iocname }}
+          mkdir -p {{ .mountPath }}/{{ $.Values.iocname }} || true
           {{- if eq .name "config" }}
           cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
           echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
