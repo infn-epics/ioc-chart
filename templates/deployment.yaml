@@ -152,7 +152,7 @@ spec:
         securityContext:
 {{ toYaml .Values.securityContext | indent 12 }}
 
-{{- if not ( hasKey .Values.devtype and (eq .Values.devtype "development") ) }}
+{{- if not ( and (hasKey .Values "devtype") (eq .Values.devtype "development") ) }}
         command:
         - sh
         - -c
@@ -251,7 +251,7 @@ spec:
 {{- end }}
     
         ports:
-{{- if hasKey .Values.devtype and (eq .Values.devtype "development")  }}
+{{- if and (hasKey .Values "devtype") (eq .Values.devtype "development") }}
         - containerPort: 22
           name: ssh
 {{- end }}

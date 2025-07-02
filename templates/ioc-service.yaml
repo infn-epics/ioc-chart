@@ -10,13 +10,13 @@ spec:
   {{- else }}
   clusterIP: None
   {{- end }}
-  {{- if and (hasKey .Values.devtype) (eq .Values.devtype "development") }}
+{{- if and (hasKey .Values "devtype") (eq .Values.devtype "development") }}
   type: NodePort
-  {{- else }}
+{{- else }}
   type: ClusterIP
-  {{- end }}
+{{- end }}
   ports:
-{{- if and (hasKey .Values.devtype) (eq .Values.devtype "development")  }}
+{{- if and (hasKey .Values "devtype") (eq .Values.devtype "development") }}
   - name: ssh
     port: 22
     targetPort: 22
