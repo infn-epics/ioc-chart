@@ -16,7 +16,7 @@ spec:
   type: ClusterIP
   {{- end }}
   ports:
-{{- if hasKey .Values.devtype and (eq .Values.devtype "development")  }}
+{{- if and (hasKey .Values.devtype) (eq .Values.devtype "development")  }}
   - name: ssh
     port: 22
     targetPort: 22
