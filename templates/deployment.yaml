@@ -363,28 +363,24 @@ spec:
         - name: {{ $envVar.name }}
           value: {{ $envVar.value | quote }}
         {{- end }}
-    {{- if and (.Values.useAffinity) (.Values.affinityKey) }}
+    {{- if or (hasKey .Values "runon") (hasKey .Values "networks") }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: {{.Values.affinityKey}}
-                operator: In
-                values:
-                - {{ .Values.affinityValue }}
-      {{- else if .Values.networks }}
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-            {{- range .Values.networks }}
+              {{- range .Values.runon }}
               - key: {{.name}}
                 operator: In
                 values:
                 - {{.annotation}}
-            {{- end }}
+              {{- end }}
+              {{- range .Values.networks }}
+              - key: {{.name}}
+                operator: In
+                values:
+                - {{.annotation}}
+              {{- end }}
       {{- end }}
       tolerations:
       - key: nodetype
