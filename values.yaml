@@ -104,6 +104,7 @@ staticIP: ## impose a static IP
 
 ca_server_port: 5064
 pva_server_port: 5075
+ssh_nodeport: 300022
 
 nfsMounts:
   # - name: nfs-volume-1
