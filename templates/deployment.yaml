@@ -16,10 +16,10 @@ spec:
       labels:
         {{- include "ioc-chart.selectorLabels" . | nindent 8 }}
 
-{{- range .Values.networks }}
       annotations:
+      {{- range .Values.networks }}
         k8s.v1.cni.cncf.io/networks: {{.annotation}}
-{{- end }}
+      {{- end }}
     spec:
       {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName | quote }}
@@ -363,7 +363,10 @@ spec:
         - name: {{ $envVar.name }}
           value: {{ $envVar.value | quote }}
         {{- end }}
-    {{- if or (hasKey .Values "runon") (hasKey .Values "networks") }}
+{{- if or 
+    (gt (len (default (list) .Values.runon)) 0) 
+    (gt (len (default (list) .Values.networks)) 0) 
+}}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
