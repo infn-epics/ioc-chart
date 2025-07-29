@@ -207,7 +207,8 @@ spec:
           mkdir -p {{ .mountPath }}/{{ $.Values.iocname }} || true
           {{- if eq .name "config" }}
           cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
-          if [ -e /epics/ioc/runtime ]; then
+          if [ -d /epics/ioc/runtime ]; then
+            echo "Copying runtime files to {{ .mountPath }}/{{ $.Values.iocname }}/"
             cp -r /epics/ioc/runtime {{ .mountPath }}/{{ $.Values.iocname }}/
           fi
           echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
