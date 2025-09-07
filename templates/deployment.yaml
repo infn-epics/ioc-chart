@@ -213,6 +213,7 @@ spec:
           fi
           echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
           if [ -e /BUILD_INFO.txt ]; then
+            cat /BUILD_INFO.txt
             cat /BUILD_INFO.txt >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
           else
             echo "No BUILD_INFO.txt found" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
