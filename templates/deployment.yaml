@@ -383,12 +383,12 @@ spec:
                 values:
                 - {{.annotation}}
               {{- end }}
-              {{- range .Values.networks }}
-              - key: {{.name}}
-                operator: In
-                values:
-                - {{.annotation}}
-              {{- end }}
+              # {{- range .Values.networks }}
+              # - key: {{.name}}
+              #   operator: In
+              #   values:
+              #   - {{.annotation}}
+              # {{- end }}
       {{- end }}
       tolerations:
       - key: nodetype
