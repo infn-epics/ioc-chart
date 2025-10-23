@@ -368,10 +368,14 @@ spec:
         - name: {{ $envVar.name }}
           value: {{ $envVar.value | quote }}
         {{- end }}
-{{- if or 
-    (gt (len (default (list) .Values.runon)) 0) 
-    (gt (len (default (list) .Values.networks)) 0) 
-}}
+  # {{- if or 
+  #     (gt (len (default (list) .Values.runon)) 0) 
+  #     (gt (len (default (list) .Values.networks)) 0) 
+  # }}
+      {{- if or 
+        (gt (len (default (list) .Values.runon)) 0) 
+        # (gt (len (default (list) .Values.networks)) 0) 
+        }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
