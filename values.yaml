@@ -52,6 +52,7 @@ serviceAccountName: "default"
 # for each IOC instance. `ec ioc deploy` supplies ioc_name and ioc_version
 # on the command line to helm.
 image: ghcr.io/infn-epics/infn-epics-ioc-runtime
+initimage: ghcr.io/infn-epics/container-init
 imagePullPolicy: Always
 ioc_version: latest
 iocname:
