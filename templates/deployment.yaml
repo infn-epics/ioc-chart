@@ -36,7 +36,7 @@ spec:
       initContainers:
       
       - name: init-container-git
-        image: {{.Values.initimage }}
+        image: {{ .Values.initimage | quote }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         securityContext:
