@@ -41,6 +41,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         securityContext:
 {{ toYaml .Values.securityContext | indent 12 }}
+        {{- if .Values.epicsConfiguration.name }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.epicsConfiguration.name }}
+        {{- end }}
         command:
         - sh
         - -c
