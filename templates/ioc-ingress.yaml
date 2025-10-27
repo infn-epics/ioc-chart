@@ -34,7 +34,7 @@ spec:
                   number: {{ $.Values.service.port }}
           {{- end }}
           {{- if and $.Values.service.http.enable (hasKey $.Values.service.http "port") }}
-          - path:  /web
+          - path:  /
             pathType: Prefix
             backend:
               service:
