@@ -143,6 +143,12 @@ spec:
       - name: config-dump
         configMap:
           name: {{ include "ioc-chart.release" . }}
+      - name: beamline-config
+        configMap:
+          name: {{ .Values.epicsConfiguration.name }}
+          items:
+          - key: {{ .Values.beamline }}-configuration.yaml
+            path: epik8s-beamline.yaml
       {{- range .Values.nfsMounts }}
       - name: {{ .name }}
         nfs:
@@ -308,6 +314,12 @@ spec:
         {{- end }}
         - name: config-dump
           mountPath: /etc/config-dump
+        {{- if .Values.epicsConfiguration.name }}
+        - name: beamline-config
+          mountPath: /etc/epik8s-beamline.yaml
+          subPath: epik8s-beamline.yaml
+          readOnly: true
+        {{- end }}
         {{- if .Values.dataVolume.pvc }}
         - name: data-volume
           mountPath: {{ .Values.dataVolume.hostPath }}
