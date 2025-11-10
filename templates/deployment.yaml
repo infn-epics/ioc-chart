@@ -157,7 +157,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ include "ioc-chart.release" . }}
-        image: "{{ .Values.image }}:{{.Values.ioc_version}}"
+        image: "{{- if contains ":" .Values.image }}{{ .Values.image }}{{- else }}{{ .Values.image }}:{{.Values.ioc_version}}{{- end }}"
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         securityContext:
