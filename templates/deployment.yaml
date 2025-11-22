@@ -185,8 +185,8 @@ spec:
           ## if also in devices if defined for server and port
           {{- if and .Values.devices }}
             {{- range .Values.devices }}
-              {{- if and (.server) (.port) (not .nocheckconn) }}
-          echo "checking connection to {{ .server }}:{{ .port }}"
+              {{- if and (.server) (.port) (not .nocheckconn) -}}
+          echo "checking connection to {{ .server }}:{{ .port }} check {{.nocheckconn}}"
           socat -T5 /dev/null TCP:{{ .server }}:{{ .port }} || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
           echo "connection to {{ .server }}:{{ .port }} successful"
               {{- end }}
