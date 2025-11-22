@@ -174,6 +174,24 @@ spec:
           echo "Starting caRepeater"
           caRepeater &
           {{- end }}
+          ## check if server/port is defined and nocheckconn is not set and check if the connection can be established
+          ## if no exits with error
+          
+          {{- if and (.Values.serial.ip) (.Values.serial.port) (not .Values.nocheckconn) }}
+          echo "checking connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }}"
+          timeout 5 bash -c "</dev/tcp/{{ .Values.serial.ip }}/{{ .Values.serial.port }}" || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
+          echo "connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }} successful"
+          {{- end }}
+          ## if also in devices if defined for server and port
+          {{- if and .Values.devices }}
+            {{- range .Values.devices }}
+              {{- if and (.server) (.port) (not $.Values.nocheckconn) }}
+          echo "checking connection to {{ .server }}:{{ .port }}"
+          timeout 5 bash -c "</dev/tcp/{{ .server }}/{{ .port }}" || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
+          echo "connection to {{ .server }}:{{ .port }} successful"
+              {{- end }}
+            {{- end }}
+          {{- end }}
 
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
           echo "opening {{ .Values.serial.ptty }},raw,echo=0,b{{ .Values.serial.baud }} tcp:{{ .Values.serial.ip }}:{{ .Values.serial.port }}"
