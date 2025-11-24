@@ -189,7 +189,7 @@ spec:
           echo "checking connection to {{ .server }}:{{ .port }} ..."
           socat -T1 /dev/null TCP:{{ .server }}:{{ .port }} || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
           echo "connection to {{ .server }}:{{ .port }} successful!!"
-          sleep 1
+          sleep 2
               {{- end }}
             {{- end }}
           {{- end }}
