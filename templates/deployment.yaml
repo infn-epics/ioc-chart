@@ -179,7 +179,7 @@ spec:
           
           {{- if and (.Values.serial.ip) (.Values.serial.port) (not .Values.nocheckconn) }}
           echo "checking connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }}"
-          nc -z {{ .Values.serial.ip }} {{ .Values.serial.port }} || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
+          socat -T1 /dev/null TCP:{{ .Values.serial.ip }}:{{ .Values.serial.port }} || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
           echo "connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }} successful"
           {{- end }}
           ## if also in devices if defined for server and port
@@ -187,7 +187,7 @@ spec:
             {{- range .Values.devices }}
               {{- if and (.server) (.port) (not .nocheckconn) }}
           echo "checking connection to {{ .server }}:{{ .port }} ..."
-          nc -z {{ .server }} {{ .port }} || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
+          socat -T1 /dev/null TCP:{{ .server }}:{{ .port }} || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
           echo "connection to {{ .server }}:{{ .port }} successful!!"
           sleep 1
               {{- end }}
