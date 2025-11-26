@@ -381,6 +381,13 @@ spec:
           value: {{ .path | quote }}
         - name: {{ .name | upper }}_DIR
           value: {{ .mountPath | quote }}
+        
+        - name: {{ .name | upper }}_NFS_SERVER
+          value: {{ .server | quote }}
+        - name: {{ .name | upper }}_NFS_SERVER_PATH
+          value: {{ .path | quote }}
+        - name: {{ .name | upper }}_NFS_MOUNT_DIR
+          value: {{ .mountPath | quote }}
         {{- end }}
         - name: IOCSH_PS1
           value: "{{ include "ioc-chart.release" . }} > "
