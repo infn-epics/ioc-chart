@@ -182,13 +182,14 @@ spec:
           socat -T1 /dev/null TCP:{{ .Values.serial.ip }}:{{ .Values.serial.port }} || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
           echo "connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }} successful"
           {{- end }}
-          ## if also in devices if defined for server and port
-          {{- if and .Values.devices }}
+          ## if also in devices if defined for server/ip and port
+          {{- if and .Values.devices (not .Values.nocheckconn)}}
             {{- range .Values.devices }}
-              {{- if and (.server) (.port) (not .nocheckconn) }}
-          echo "checking connection to {{ .server }}:{{ .port }} ..."
-          socat /dev/null TCP:{{ .server }}:{{ .port }} || (echo "## failed to connect to {{ .server }}:{{ .port }} " && exit 1)
-          echo "connection to {{ .server }}:{{ .port }} successful!!"
+              {{- $address := .server | default .ip }}
+              {{- if and $address (.port) (not .nocheckconn) }}
+          echo "checking connection to {{ $address }}:{{ .port }} ..."
+          socat /dev/null TCP:{{ $address }}:{{ .port }} || (echo "## failed to connect to {{ $address }}:{{ .port }} " && exit 1)
+          echo "connection to {{ $address }}:{{ .port }} successful!!"
           sleep 1
               {{- end }}
             {{- end }}
