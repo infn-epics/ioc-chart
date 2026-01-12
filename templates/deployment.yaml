@@ -187,9 +187,9 @@ spec:
             {{- range .Values.devices }}
               {{- $address := .server | default .ip }}
               {{- if and $address (.port) (not .nocheckconn) }}
-          echo "checking connection to {{ $address }}:{{ .port }} ..."
-          socat /dev/null TCP:{{ $address }}:{{ .port }} || (echo "## failed to connect to {{ $address }}:{{ .port }} " && exit 1)
-          echo "connection to {{ $address }}:{{ .port }} successful!!"
+          echo "checking connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} ..."
+          socat -T5 /dev/null TCP:{{ $address }}:{{ .port }} || (echo "## failed to connect to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} " && exit 1)
+          echo "connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} successful!!"
           sleep 1
               {{- end }}
             {{- end }}
