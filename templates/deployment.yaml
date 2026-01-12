@@ -184,15 +184,20 @@ spec:
           {{- end }}
           ## if also in devices if defined for server/ip and port
           {{- if and .Values.devices (not .Values.nocheckconn)}}
+            error_count=0
             {{- range .Values.devices }}
               {{- $address := .server | default .ip }}
               {{- if and $address (.port) (not .nocheckconn) }}
           echo "checking connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} ..."
-          socat /dev/null TCP:{{ $address }}:{{ .port }},connect-timeout=2 || (echo "## failed to connect to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} " && exit 1)
+          socat /dev/null TCP:{{ $address }}:{{ .port }},connect-timeout=2 || (echo "## failed to connect to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} " && error_count=$((error_count + 1)))
           echo "connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} successful!!"
           sleep 1
               {{- end }}
             {{- end }}
+            if [ $error_count -gt 0 ]; then
+              echo "Total connection failures: $error_count"
+              exit 1
+            fi
           {{- end }}
 
           {{- if and (.Values.serial.ip) (.Values.serial.port) }}
