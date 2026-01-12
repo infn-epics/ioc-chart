@@ -199,7 +199,7 @@ spec:
               {{- end }}
             {{- end }}
             if [ $error_count -gt 0 ]; then
-              echo "Total connection failures: $error_count"
+              echo "Total connection failures: $error_count, exiting! (use nocheckconn in configuration to skip this checks)"
               exit 1
             fi
           {{- end }}
