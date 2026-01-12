@@ -179,7 +179,7 @@ spec:
           
           {{- if and (.Values.serial.ip) (.Values.serial.port) (not .Values.nocheckconn) }}
           echo "checking connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }}"
-          socat -T1 /dev/null TCP:{{ .Values.serial.ip }}:{{ .Values.serial.port }} || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
+          socat TCP:{{ .Values.serial.ip }}:{{ .Values.serial.port }},connect-timeout=5 || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
           echo "connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }} successful"
           {{- end }}
           ## if also in devices if defined for server/ip and port
@@ -188,7 +188,7 @@ spec:
               {{- $address := .server | default .ip }}
               {{- if and $address (.port) (not .nocheckconn) }}
           echo "checking connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} ..."
-          socat -T5 /dev/null TCP:{{ $address }}:{{ .port }} || (echo "## failed to connect to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} " && exit 1)
+          socat /dev/null TCP:{{ $address }}:{{ .port }},connect-timeout=5 || (echo "## failed to connect to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} " && exit 1)
           echo "connection to {{ $address }}:{{ .port }}{{ if .name }} ({{ .name }}){{ end }} successful!!"
           sleep 1
               {{- end }}
