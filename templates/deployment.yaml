@@ -452,10 +452,12 @@ spec:
         effect: NoSchedule
     {{- if .Values.networks }}
     {{- range .Values.networks }}
+      {{- if .name }}
       - key: {{.name}}
         operator: Equal
         value: {{.annotation}}
         effect: NoSchedule
+      {{- end }}
     {{- end }}
     {{- end }}
 
