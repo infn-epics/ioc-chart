@@ -429,16 +429,20 @@ spec:
             nodeSelectorTerms:
             - matchExpressions:
               {{- range .Values.runon }}
+              {{- if .name }}
               - key: {{.name}}
                 operator: In
                 values:
                 - {{.annotation}}
               {{- end }}
+              {{- end }}
               {{- range .Values.networks }}
+              {{- if .name }}
               - key: {{.name}}
                 operator: In
                 values:
                 - {{.annotation}}
+              {{- end }}
               {{- end }}
       {{- end }}
       tolerations:
