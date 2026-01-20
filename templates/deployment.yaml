@@ -450,16 +450,16 @@ spec:
         operator: Equal
         value: {{ .Values.beamline }}
         effect: NoSchedule
-    {{- if .Values.networks }}
-    {{- range .Values.networks }}
+      {{- if .Values.networks }}
+      {{- range .Values.networks }}
       {{- if .name }}
       - key: {{.name}}
         operator: Equal
         value: {{.annotation}}
         effect: NoSchedule
       {{- end }}
-    {{- end }}
-    {{- end }}
+      {{- end }}
+      {{- end }}
 
   volumeClaimTemplates:
     {{- if .Values.runtimeClaim }}
