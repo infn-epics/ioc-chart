@@ -422,7 +422,18 @@ spec:
           value: {{ $envVar.value | quote }}
         {{- end }}
   
-    {{- if or (gt (len (default (list) .Values.runon)) 0) (gt (len (default (list) .Values.networks)) 0) }}
+    {{- $hasNodeAffinity := false }}
+    {{- range .Values.runon }}
+      {{- if .name }}
+        {{- $hasNodeAffinity = true }}
+      {{- end }}
+    {{- end }}
+    {{- range .Values.networks }}
+      {{- if .name }}
+        {{- $hasNodeAffinity = true }}
+      {{- end }}
+    {{- end }}
+    {{- if $hasNodeAffinity }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
