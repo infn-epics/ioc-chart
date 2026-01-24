@@ -173,10 +173,9 @@ spec:
           if [ -e /BUILD_INFO.txt ]; then
             echo "====== BUILD INFO ======="
             cat /BUILD_INFO.txt
-            cat /BUILD_INFO.txt >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
             echo "========================="
           else
-            echo "===>> No BUILD_INFO.txt found" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
+            echo "===>> No BUILD_INFO.txt found" 
           fi
           {{- if .Values.carepeater }}
           echo "Starting caRepeater"
@@ -260,7 +259,11 @@ spec:
             cp -r /epics/ioc/runtime {{ .mountPath }}/{{ $.Values.iocname }}/
           fi
           echo "Start Date: $data" > {{ .mountPath }}/{{ $.Values.iocname }}/start.log
-          
+          if [ -e /BUILD_INFO.txt ]; then
+            cat /BUILD_INFO.txt >> {{ .mountPath }}/{{ .Values.iocname }}/start.log
+          else
+            echo "No BUILD_INFO.txt found" >> {{ .mountPath }}/{{ .Values.iocname }}/start.log
+          fi
           {{- if hasKey $.Values "iocname" }}
           echo "IOC Name: {{ $.Values.iocname }}" >> {{ .mountPath }}/{{ $.Values.iocname }}/start.log
           {{- end }}
