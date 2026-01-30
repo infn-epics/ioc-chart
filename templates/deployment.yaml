@@ -170,11 +170,12 @@ spec:
         - |
           set -e  # Exit immediately if a command fails
           data=`date`
+          cp /etc/config-dump/config.yaml iocconfig.yaml
           if [ -e /BUILD_INFO.txt ]; then
             echo "====== BUILD INFO ======="
             cat /BUILD_INFO.txt
             echo "========================="
-            ## Extract TAG version from BUILD_INFO.txt and update config.yaml
+            ## Extract TAG version from BUILD_INFO.txt and update iocconfig.yaml
             BUILD_TAG=$(grep -E '^TAG[[:space:]]+"' /BUILD_INFO.txt | sed 's/TAG[[:space:]]*"\([^"]*\)"/\1/' || true)
             if [ -n "$BUILD_TAG" ]; then
               echo "Found BUILD TAG: $BUILD_TAG"
@@ -182,9 +183,9 @@ spec:
               IOC_VERSION_FROM_TAG=$(echo "$BUILD_TAG" | sed 's/.*-\(v[0-9].*\)/\1/')
               if [ -n "$IOC_VERSION_FROM_TAG" ]; then
                 echo "Extracted IOC version from TAG: $IOC_VERSION_FROM_TAG"
-                if [ -e /etc/config-dump/config.yaml ]; then
-                  sed -i "s/^ioc_version:.*/ioc_version: $IOC_VERSION_FROM_TAG/" /etc/config-dump/config.yaml
-                  echo "Updated ioc_version in config.yaml to: $IOC_VERSION_FROM_TAG"
+                if [ -e iocconfig.yaml ]; then
+                  sed -i "s/^ioc_version:.*/ioc_version: $IOC_VERSION_FROM_TAG/" iocconfig.yaml
+                  echo "Updated ioc_version in iocconfig.yaml to: $IOC_VERSION_FROM_TAG"
                 fi
               fi
             fi
@@ -238,7 +239,7 @@ spec:
           {{- end }}
 
           echo "=== configuration yaml ======="
-          cat /etc/config-dump/config.yaml 
+          cat iocconfig.yaml 
           echo "=============================="
         
           {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
@@ -252,16 +253,16 @@ spec:
           mkdir ~/.ssh
           cp /.ssh/id_rsa* ~/.ssh/
           chmod 400 -R ~/.ssh/id_rsa
-          epik8s-run /etc/config-dump/config.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
+          epik8s-run iocconfig.yaml {{.Values.iocname }} --workdir /tmp --native --configdir {{ .Values.iocConfig }}
           exit $?
           {{- else}}
           echo "* using ibek template {{ .Values.template }}"
-          jnjrender  /epics/support/templates/ /etc/config-dump/config.yaml --auto --output {{ .Values.iocConfig }}
+          jnjrender  /epics/support/templates/ iocconfig.yaml --auto --output {{ .Values.iocConfig }}
           {{- end }}
           {{- else}}
 
           echo "* copy ioc config and replace any .j2 with rendered values"
-          find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" /etc/config-dump/config.yaml --output "${1%.j2}"' _ {} \;
+          find {{ .Values.iocConfig }} -name "*.j2" -exec sh -c 'jnjrender "$1" iocconfig.yaml --output "${1%.j2}"' _ {} \;
           {{- end}}
 
           {{- range .Values.nfsMounts }}
