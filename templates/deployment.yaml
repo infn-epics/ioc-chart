@@ -261,6 +261,17 @@ spec:
           if [ -e /epics/support/templates/ibek-templates/global/global.yaml.j2 ]; then
             echo "* applying global template overrides"
             jnjrender /epics/support/templates/ibek-templates/global/ /tmp/iocconfig.yaml --output {{ .Values.iocConfig }}
+            ## Append global.yaml content to the main yaml file and remove global.yaml
+            if [ -e {{ .Values.iocConfig }}/global.yaml ]; then
+              for yaml_file in {{ .Values.iocConfig }}/*.yaml; do
+                if [ "$yaml_file" != "{{ .Values.iocConfig }}/global.yaml" ]; then
+                  echo "" >> "$yaml_file"
+                  cat {{ .Values.iocConfig }}/global.yaml >> "$yaml_file"
+                  echo "* appended global.yaml to $yaml_file"
+                fi
+              done
+              rm {{ .Values.iocConfig }}/global.yaml
+            fi
           fi
           {{- end }}
           {{- else}}
