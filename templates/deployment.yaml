@@ -258,9 +258,9 @@ spec:
           {{- else}}
           echo "* using ibek template {{ .Values.template }}"
           jnjrender  /epics/support/templates/ /tmp/iocconfig.yaml --auto --output {{ .Values.iocConfig }}
-          if [ -e /epics/support/templates/global/global.yaml.j2 ]; then
+          if [ -e /epics/support/templates/ibek-templates/global/global.yaml.j2 ]; then
             echo "* applying global template overrides"
-            jnjrender /epics/support/templates/global/ /tmp/iocconfig.yaml --output {{ .Values.iocConfig }}
+            jnjrender /epics/support/templates/ibek-templates/global/ /tmp/iocconfig.yaml --output {{ .Values.iocConfig }}
           fi
           {{- end }}
           {{- else}}
