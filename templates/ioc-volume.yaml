@@ -9,6 +9,9 @@ metadata:
     app: {{ include "ioc-chart.release" . }}
     beamline: {{ .Values.beamline | quote }}
 spec:
+  {{- if .Values.dataVolume.storageClassName }}
+  storageClassName: {{ .Values.dataVolume.storageClassName | quote }}
+  {{- end }}
   accessModes:
     - {{ .Values.dataVolume.accessMode }}
   resources:
