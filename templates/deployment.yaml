@@ -545,10 +545,13 @@ spec:
     - metadata:
         name: data-volume
       spec:
+        {{- if .Values.dataVolume.storageClassName }}
+        storageClassName: {{ .Values.dataVolume.storageClassName | quote }}
+        {{- end }}
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 1Gi
+            storage: {{ .Values.dataVolume.size }}
     {{- end }}
     # {{- if .Values.gitRepoConfig.url }}
     # - metadata:
