@@ -242,7 +242,7 @@ spec:
           cat /tmp/iocconfig.yaml 
           echo "=============================="
         
-          {{- if and (hasKey .Values "template") (not (empty .Values.template)) }}
+          {{- if or (and (hasKey .Values "template") (not (empty .Values.template))) (and (hasKey .Values "host") (not (empty .Values.host))) }}
           {{- if and (hasKey .Values "host") (not (empty .Values.host)) }}
           ## running on remote host
           {{- if .Values.python_env }}
