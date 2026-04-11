@@ -452,6 +452,8 @@ spec:
         {{- if .Values.epicsConfiguration.pvagateway }}
         - name: EPICS_PVA_NAME_SERVERS
           value: {{ .Values.epicsConfiguration.pvagateway | quote }}
+        - name: EPICS_PVA_ADDR_LIST
+          value: {{ .Values.epicsConfiguration.pvagateway | quote }}
         - name: EPICS_PVA_AUTO_ADDR_LIST
           value: "NO"
         {{- end }}
