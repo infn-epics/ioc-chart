@@ -66,13 +66,18 @@ spec:
             echo "Cloning repository unauthenticated"
           {{- end }}
          
+          {{- if and .Values.gitRepoConfig.path (ne .Values.gitRepoConfig.path ".") (not .Values.gitRepoConfig.recurse) }}
+          echo "Using sparse checkout for path: {{ .Values.gitRepoConfig.path }}"
+          git clone --filter=blob:none --sparse --depth 1{{- if .Values.gitRepoConfig.branch }} -b {{ .Values.gitRepoConfig.branch }}{{- end }} {{ .Values.gitRepoConfig.url }} temp-config
+          git -C temp-config sparse-checkout set {{ .Values.gitRepoConfig.path }}
+          mv temp-config/{{ .Values.gitRepoConfig.path }}/* /pvc/
+          rm -rf temp-config
+          {{- else }}
           if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
             git clone --depth 1 -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           else
             git clone --depth 1 {{ .Values.gitRepoConfig.url }} --recurse-submodules temp-config
           fi
-        
-          
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
               mv temp-config/* /pvc/
@@ -83,6 +88,7 @@ spec:
           else
             mv temp-config/* /pvc/
           fi
+          {{- end }}
           
           ls /pvc
         imagePullPolicy: IfNotPresent
