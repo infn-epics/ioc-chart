@@ -49,6 +49,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.ioc_version }}
 ioc_version: {{ .Values.ioc_version | quote }}
 {{- end }}
+{{- if ne (.Values.pva | toString) "false" }}
+epics-pva: "true"
+{{- end }}
 {{- end }}
 
 
