@@ -74,9 +74,9 @@ spec:
           rm -rf temp-config
           {{- else }}
           if [ -n "{{ .Values.gitRepoConfig.branch }}" ]; then
-            git clone --depth 1{{- if .Values.gitRepoConfig.recurse }} --recurse-submodules{{- end }} -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} temp-config
+            git clone --depth 1 --recurse-submodules -b {{ .Values.gitRepoConfig.branch }} {{ .Values.gitRepoConfig.url }} temp-config
           else
-            git clone --depth 1{{- if .Values.gitRepoConfig.recurse }} --recurse-submodules{{- end }} {{ .Values.gitRepoConfig.url }} temp-config
+            git clone --depth 1 --recurse-submodules {{ .Values.gitRepoConfig.url }} temp-config
           fi
           if [ -d temp-config/{{ .Values.gitRepoConfig.path }} ]; then
             if [ "{{ .Values.gitRepoConfig.path }}" == "." ]; then
