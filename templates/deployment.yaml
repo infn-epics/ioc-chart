@@ -287,7 +287,9 @@ spec:
           {{- end}}
 
           {{- range .Values.nfsMounts }}
+          {{- if ne .name "data" }}
           mkdir -p {{ .mountPath }}/{{ $.Values.iocname }} || true
+          {{- end }}
           {{- if eq .name "config" }}
           cp -r {{ $.Values.iocConfig }}/* {{ .mountPath }}/{{ $.Values.iocname }}/
           if [ -d /epics/ioc/runtime ]; then
