@@ -2,6 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "ioc-chart.release" . }}
+  {{- if not .Values.staticIP }}
+  annotations:
+    # No static IP configured for this beamline (baseIp/startIp unset), so this Service
+    # relies on a dynamically-assigned ClusterIP. Keep it alive across an ArgoCD app
+    # delete/recreate cycle (not just pod restarts), otherwise clients caching its
+    # address (e.g. a PVA gateway's nameserver config) break on every IOC redeploy.
+    argocd.argoproj.io/sync-options: Delete=false
+  {{- end }}
 spec:
   selector:
     {{- include "ioc-chart.selectorLabels" . | nindent 4 }}
