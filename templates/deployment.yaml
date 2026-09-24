@@ -210,6 +210,11 @@ spec:
           socat /dev/null TCP:{{ .Values.serial.ip }}:{{ .Values.serial.port }},connect-timeout=2 || (echo "## failed to connect to {{ .Values.serial.ip }}:{{ .Values.serial.port }} " && exit 1)
           echo "connection to {{ .Values.serial.ip }}:{{ .Values.serial.port }} successful"
           {{- end }}
+          {{- if and .Values.server .Values.port (not .Values.nocheckconn) }}
+          echo "checking connection to {{ .Values.server }}:{{ .Values.port }}"
+          socat /dev/null TCP:{{ .Values.server }}:{{ .Values.port }},connect-timeout=2 || (echo "## failed to connect to {{ .Values.server }}:{{ .Values.port }} " && exit 1)
+          echo "connection to {{ .Values.server }}:{{ .Values.port }} successful"
+          {{- end }}
           ## if also in devices if defined for server/ip and port
           {{- if and .Values.devices (not .Values.nocheckconn)}}
             error_count=0
